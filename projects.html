@@ -55,7 +55,6 @@
     <!-- ================= PROJECT GRID ================= -->
     <section class="py-4 pb-5" aria-label="Project list">
 
-      <!-- TODO: replace each card with a real project; delete unused cards. -->
       <div class="row g-4">
 
         <div class="col-md-6 col-lg-4" data-reveal>
@@ -77,15 +76,16 @@
         <div class="col-md-6 col-lg-4" data-reveal>
           <div class="card-surface d-flex flex-column">
             <div class="card-icon">&#128737;</div>
-            <h3 class="h5 mb-2">[Security Project]</h3>
-            <!-- TODO: e.g. a hardening toolkit, a memory-forensics writeup from GFACT work, an HTB lab series -->
+            <h3 class="h5 mb-2">Outage Investigation &amp; Incident Response</h3>
             <p class="text-muted-custom small flex-grow-1">
-              [One paragraph: what it does, why you built it, the hardest technical part.
-              Security projects read best with a concrete outcome — &ldquo;reduced X,&rdquo;
-              &ldquo;caught Y,&rdquo; &ldquo;documented Z.&rdquo;]
+              Two unexplained outages on the home server, investigated end-to-end: system and
+              boot log analysis, auditing live connections, processes, and scheduled tasks to
+              rule out compromise, then root-causing both to a faulty hardware driver — with a
+              permanent fix implemented and verified. The playbook that came out of it is now
+              how I triage any incident.
             </p>
             <div class="mt-3">
-              <span class="tag">[Tool]</span><span class="tag">[Language]</span><span class="tag">[Domain]</span>
+              <span class="tag">Log Analysis</span><span class="tag">Incident Response</span><span class="tag">Linux / Proxmox</span>
             </div>
           </div>
         </div>
@@ -93,14 +93,14 @@
         <div class="col-md-6 col-lg-4" data-reveal>
           <div class="card-surface d-flex flex-column">
             <div class="card-icon">&#128187;</div>
-            <h3 class="h5 mb-2">[Software Project]</h3>
-            <!-- TODO: e.g. a CS 452 OS course project, a systems programming assignment done properly -->
+            <h3 class="h5 mb-2">Full Stack Web Development</h3>
             <p class="text-muted-custom small flex-grow-1">
-              [One paragraph: the problem, your design decisions, and what you learned about
-              the layer below — schedulers, memory, I/O.]
+              Code Platoon&rsquo;s full-stack curriculum for military veterans: building and
+              shipping web applications with React.js on the front end, Django and PostgreSQL
+              behind it — from schema design through deployment.
             </p>
             <div class="mt-3">
-              <span class="tag">[Language]</span><span class="tag">[Technology]</span>
+              <span class="tag">React.js</span><span class="tag">Django</span><span class="tag">PostgreSQL</span>
             </div>
           </div>
         </div>
@@ -108,14 +108,15 @@
         <div class="col-md-6 col-lg-4" data-reveal>
           <div class="card-surface d-flex flex-column">
             <div class="card-icon">&#128202;</div>
-            <h3 class="h5 mb-2">[Monitoring / Automation Project]</h3>
-            <!-- TODO: optional — delete this card if unused -->
+            <h3 class="h5 mb-2">Backup &amp; Disaster Recovery Automation</h3>
             <p class="text-muted-custom small flex-grow-1">
-              [One paragraph. Monitoring and automation projects show operational maturity —
-              lead with the alert you got at 2am and the fix it inspired.]
+              A nightly automated pipeline: logical database dumps, ZFS snapshots before any
+              significant change, encrypted offsite backup to a second location, and retention
+              pruning — so every change has a rollback path, and a failed update is a restore,
+              not an incident.
             </p>
             <div class="mt-3">
-              <span class="tag">[Tool]</span><span class="tag">[Technology]</span>
+              <span class="tag">Restic</span><span class="tag">ZFS</span><span class="tag">Bash</span>
             </div>
           </div>
         </div>
@@ -141,8 +142,8 @@
     <div class="container-xxl d-flex flex-wrap justify-content-between align-items-center gap-2 py-4">
       <p class="mb-0 small text-body-secondary">&copy; <span id="year">2026</span> Nathan Marquis &middot; Self-hosted by design, served from the Cloudflare edge.</p>
       <p class="mb-0 small text-body-secondary d-flex gap-3">
-        <a href="https://github.com/TODO" rel="me">GitHub</a>
-        <a href="https://www.linkedin.com/in/TODO" rel="me">LinkedIn</a>
+        <a href="https://github.com/nathanmarquis23" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/nathanmarquis" rel="me">LinkedIn</a>
         <a href="mailto:nathanmarquis23@gmail.com">Email</a>
       </p>
     </div>
