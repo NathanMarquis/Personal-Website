@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Nathan Marquis</title>
+  <meta name="description" content="About Nathan Marquis: background, skills, and what I care about in the work.">
+
+  <meta property="og:title" content="About — Nathan Marquis">
+  <meta property="og:description" content="Background, skills, and what I care about in the work.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nathan.andmar.dev/about.html">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="about">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header sticky-top">
+    <nav class="navbar navbar-expand-lg container-xxl" aria-label="Primary">
+      <a class="navbar-brand fw-bold" href="index.html">nathan<span class="brand-dot">.andmar.dev</span></a>
+      <div class="d-flex align-items-center gap-2 ms-lg-auto me-lg-3">
+        <button id="themeToggle" type="button" aria-label="Toggle light / dark theme" title="Toggle theme">
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun d-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav"
+                aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="primaryNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="experience.html">Experience</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 nav-cta" href="contact.html">Contact me</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container-xxl">
+
+    <!-- ================= PAGE HEAD ================= -->
+    <section class="page-head" aria-labelledby="page-title">
+      <p class="eyebrow mb-0" data-reveal>About</p>
+      <h1 id="page-title" data-reveal>The short version:</h1>
+      <p class="lead display-serif" data-reveal>I build systems that other people depend on — and I take the &ldquo;depend on&rdquo; part seriously.</p>
+    </section>
+
+    <!-- ================= STORY ================= -->
+    <section class="py-4" aria-labelledby="story-h">
+      <h2 id="story-h" class="section-title" data-reveal>Background</h2>
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-8" data-reveal>
+          <!-- TODO: rewrite with your real story. Keep it to two short paragraphs. -->
+          <p>
+            I&rsquo;m a computer science senior whose favorite problem has always been the one
+            nobody sees when things go right. My first &ldquo;production system&rdquo; was my own
+            home server: a Proxmox box running photo archives, file sync, and self-hosted
+            applications for my family, with encrypted offsite backups and automated security
+            patching. It taught me more about reliability than any course — because when it
+            fails, the failure is personal.
+          </p>
+          <p>
+            That experience shaped how I work: measure before you claim, document as you go,
+            assume the network is hostile, and make every change reversible. I&rsquo;m currently
+            looking for roles where that mindset matters — systems, security, or infrastructure
+            engineering.
+          </p>
+        </div>
+        <div class="col-lg-4" data-reveal>
+          <div class="card-surface">
+            <h3 class="h5 mb-3">&#128205; At a glance</h3>
+            <ul class="list-unstyled small text-muted-custom mb-0">
+              <!-- TODO: real details -->
+              <li class="mb-2"><strong class="text-body d-block">Location</strong> [City, State] &mdash; open to relocation</li>
+              <li class="mb-2"><strong class="text-body d-block">School</strong> [University], B.S. Computer Science, 2026</li>
+              <li class="mb-2"><strong class="text-body d-block">Focus</strong> Systems &middot; Security &middot; Infrastructure</li>
+              <li><strong class="text-body d-block">Status</strong> Open to internship / new-grad roles</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VALUES ================= -->
+    <section class="py-4" aria-labelledby="values-h">
+      <h2 id="values-h" class="section-title" data-reveal>How I work</h2>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="card-surface">
+            <div class="card-icon">&#128273;</div>
+            <h3 class="h6 mb-2">Reversibility first</h3>
+            <p class="text-muted-custom small mb-0">Snapshots before changes, logical dumps over raw files, every deploy with a rollback path.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="card-surface">
+            <div class="card-icon">&#128065;</div>
+            <h3 class="h6 mb-2">Document as you go</h3>
+            <p class="text-muted-custom small mb-0">My infrastructure doc exists because I forgot things. Write it down the day you learn it, not the week you need it.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="card-surface">
+            <div class="card-icon">&#128737;</div>
+            <h3 class="h6 mb-2">Assume breach</h3>
+            <p class="text-muted-custom small mb-0">Everything network-reachable is attack surface. Least privilege, scoped grants, and no exceptions for convenience.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3" data-reveal>
+          <div class="card-surface">
+            <div class="card-icon">&#128200;</div>
+            <h3 class="h6 mb-2">Verify, don&rsquo;t hope</h3>
+            <p class="text-muted-custom small mb-0">A change isn&rsquo;t done until logs and a live health check say so. &ldquo;It should work&rdquo; is not a conclusion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SKILLS ================= -->
+    <section class="py-4" aria-labelledby="skills-h">
+      <h2 id="skills-h" class="section-title" data-reveal>Skills</h2>
+      <div class="row g-4">
+        <div class="col-lg-6" data-reveal>
+          <div class="card-surface h-100">
+            <h3 class="h5 mb-3">Languages &amp; core</h3>
+            <!-- TODO: trim to what you can defend in an interview -->
+            <span class="chip">C</span><span class="chip">Python</span><span class="chip">[Java]</span>
+            <span class="chip">[Go/Rust]</span><span class="chip">SQL</span><span class="chip">Bash</span>
+          </div>
+        </div>
+        <div class="col-lg-6" data-reveal>
+          <div class="card-surface h-100">
+            <h3 class="h5 mb-3">Systems &amp; security</h3>
+            <span class="chip">Linux administration</span><span class="chip">Networking (TCP/IP, DNS)</span>
+            <span class="chip">Firewalls &amp; ACLs</span><span class="chip">Operating systems</span>
+            <span class="chip">Memory forensics</span><span class="chip">Incident response</span>
+          </div>
+        </div>
+        <div class="col-lg-6" data-reveal>
+          <div class="card-surface h-100">
+            <h3 class="h5 mb-3">Infrastructure</h3>
+            <span class="chip">Proxmox / LXC</span><span class="chip">Docker</span><span class="chip">ZFS</span>
+            <span class="chip">Caddy</span><span class="chip">Tailscale</span><span class="chip">Restic backups</span>
+            <span class="chip">Monitoring &amp; alerting</span>
+          </div>
+        </div>
+        <div class="col-lg-6" data-reveal>
+          <div class="card-surface h-100">
+            <h3 class="h5 mb-3">Certifications</h3>
+            <p class="text-muted-custom small mb-2">GIAC (SANS Institute):</p>
+            <span class="chip">GFACT &mdash; Forensic Analysis</span>
+            <span class="chip">GSEC &mdash; Security Engineering</span>
+            <span class="chip">GCIH &mdash; Incident Handling</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="py-5" aria-label="Contact call to action">
+      <div class="cta-banner" data-reveal>
+        <h2 class="display-serif mb-3">Sound like a fit?</h2>
+        <p class="text-muted-custom mx-auto mb-4" style="max-width: 28rem;">
+          I&rsquo;d love to hear about your team and what you&rsquo;re building.
+        </p>
+        <a href="contact.html" class="btn btn-primary">Get in touch</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer mt-auto">
+    <div class="container-xxl d-flex flex-wrap justify-content-between align-items-center gap-2 py-4">
+      <p class="mb-0 small text-body-secondary">&copy; <span id="year">2026</span> Nathan Marquis &middot; Self-hosted by design, served from the Cloudflare edge.</p>
+      <p class="mb-0 small text-body-secondary d-flex gap-3">
+        <a href="https://github.com/TODO" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/TODO" rel="me">LinkedIn</a>
+        <a href="mailto:nathanmarquis23@gmail.com">Email</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>

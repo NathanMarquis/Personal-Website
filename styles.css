@@ -1,0 +1,387 @@
+/* ============================================================
+   nathan.andmar.dev — custom design layer on top of Bootstrap 5.3.3
+   (bootstrap.min.css is loaded first; this file wins on conflicts)
+   Dark by default, light theme via [data-bs-theme="light"].
+   No web fonts: editorial serif display + system sans body.
+   ============================================================ */
+
+:root {
+  --bg: #0b0d12;
+  --surface: #12151d;
+  --surface-2: #171b25;
+  --border: rgba(255, 255, 255, 0.08);
+  --fg: #e7eaf0;
+  --muted: #9aa3b4;
+  --accent: #4f7cff;
+  --accent-2: #8a5cff;
+  --accent-soft: rgba(79, 124, 255, 0.14);
+  --grad: linear-gradient(135deg, var(--accent), var(--accent-2));
+  --radius: 1rem;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Charter, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+[data-bs-theme="light"] {
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --surface-2: #eef0f6;
+  --border: rgba(15, 23, 42, 0.1);
+  --fg: #171c26;
+  --muted: #5b6472;
+  --accent: #2f5fe8;
+  --accent-2: #7a4fe0;
+  --accent-soft: rgba(47, 95, 232, 0.1);
+}
+
+/* ---------- base ---------- */
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection { background: var(--accent); color: #fff; }
+
+main { flex: 1 0 auto; }
+
+h1, h2, .display-serif { font-family: var(--font-display); letter-spacing: -0.015em; }
+
+.text-muted-custom { color: var(--muted) !important; }
+.font-mono { font-family: var(--font-mono); }
+
+a { transition: color 0.2s ease; }
+
+/* ---------- navbar (glassy) ---------- */
+
+.site-header {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar-brand .brand-dot { color: var(--muted); font-weight: 400; }
+
+.nav-link {
+  color: var(--muted) !important;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.85rem !important;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.nav-link:hover { color: var(--fg) !important; background: var(--accent-soft); }
+
+/* active page indicator — driven by body[data-page] */
+body[data-page="home"] .nav-link[href="/"],
+body[data-page="about"] .nav-link[href="/about.html"],
+body[data-page="projects"] .nav-link[href="/projects.html"],
+body[data-page="experience"] .nav-link[href="/experience.html"],
+body[data-page="contact"] .nav-link[href="/contact.html"] {
+  color: var(--fg) !important;
+  background: var(--accent-soft);
+}
+
+.nav-cta { border: none; }
+
+#themeToggle {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  width: 2.4rem; height: 2.4rem;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.3s ease;
+}
+#themeToggle:hover { color: var(--fg); border-color: var(--accent); transform: rotate(30deg); }
+
+/* ---------- hero (home) ---------- */
+
+.hero {
+  position: relative;
+  min-height: calc(100vh - 4.5rem);
+  display: flex;
+  align-items: center;
+  padding: 4rem 0;
+  overflow: hidden;
+}
+
+/* ambient glow blobs behind the hero */
+.hero::before, .hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.hero::before {
+  width: 34rem; height: 34rem;
+  background: radial-gradient(circle, rgba(79,124,255,0.35), transparent 65%);
+  top: -8rem; right: -6rem;
+}
+.hero::after {
+  width: 30rem; height: 30rem;
+  background: radial-gradient(circle, rgba(138,92,255,0.3), transparent 65%);
+  bottom: -10rem; left: -8rem;
+}
+
+.hero .container-xxl { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.75rem, 5.5vw, 4.75rem);
+  margin: 0.9rem 0 1rem;
+}
+
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero .lead { color: var(--muted); max-width: 34rem; font-size: 1.2rem; }
+
+.status-line {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  animation: pulse 2.4s infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
+  70%  { box-shadow: 0 0 0 9px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+/* ---------- buttons ---------- */
+
+.btn-primary {
+  background: var(--grad);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.7rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.btn-primary:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px rgba(79, 124, 255, 0.65);
+  filter: brightness(1.08);
+}
+
+.btn-outline-light-custom {
+  border: 1px solid var(--border);
+  color: var(--fg);
+  background: transparent;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.7rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+.btn-outline-light-custom:hover {
+  border-color: var(--accent);
+  color: var(--fg);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+/* ---------- page headers (subpages) ---------- */
+
+.page-head { padding: 4.5rem 0 2.5rem; }
+.page-head .eyebrow {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+.page-head h1 { font-size: clamp(2.25rem, 4vw, 3.5rem); margin: 0.6rem 0 0.75rem; }
+.page-head .lead { color: var(--muted); max-width: 40rem; }
+
+.section-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.9rem;
+}
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ---------- cards ---------- */
+
+.card-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  height: 100%;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.card-surface:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.7);
+}
+
+.card-icon {
+  width: 2.6rem; height: 2.6rem;
+  border-radius: 0.75rem;
+  background: var(--accent-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  margin: 0.15rem 0.2rem 0.15rem 0;
+}
+
+/* ---------- timeline (experience / about) ---------- */
+
+.timeline { position: relative; padding-left: 1.75rem; }
+.timeline::before {
+  content: "";
+  position: absolute; left: 0.45rem; top: 0.4rem; bottom: 0.4rem;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-2));
+  opacity: 0.5;
+}
+.timeline-item { position: relative; padding-bottom: 2.25rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: "";
+  position: absolute; left: -1.75rem; top: 0.35rem;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--accent);
+}
+.timeline-item h3 { margin-bottom: 0.15rem; }
+.timeline-meta { color: var(--muted); font-size: 0.9rem; font-family: var(--font-mono); }
+
+/* ---------- skill chips ---------- */
+
+.chip {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.92rem;
+  margin: 0.25rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.chip:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+/* ---------- CTA banner (home bottom) ---------- */
+
+.cta-banner {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 3rem 2rem;
+  text-align: center;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(60% 120% at 50% 0%, var(--accent-soft), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- contact ---------- */
+
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.form-control, .form-label { color: var(--fg); }
+.form-control {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--fg);
+}
+.form-control:focus {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem var(--accent-soft);
+  color: var(--fg);
+}
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  margin-top: 4rem;
+}
+
+/* ---------- scroll-reveal transitions ---------- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+[data-reveal].revealed { opacity: 1; transform: none; }
+
+/* ---------- a11y / motion ---------- */
+
+.skip-link {
+  position: absolute; left: -999px; top: 0;
+  background: var(--accent); color: #fff;
+  padding: 0.5rem 1rem; z-index: 100; border-radius: 0 0 0.5rem 0;
+}
+.skip-link:focus { left: 0; }
+
+html.reduced-motion [data-reveal] { opacity: 1; transform: none; transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .status-dot { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

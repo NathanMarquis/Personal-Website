@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experience — Nathan Marquis</title>
+  <meta name="description" content="Work experience and education of Nathan Marquis.">
+
+  <meta property="og:title" content="Experience — Nathan Marquis">
+  <meta property="og:description" content="Work experience and education.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nathan.andmar.dev/experience.html">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="experience">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header sticky-top">
+    <nav class="navbar navbar-expand-lg container-xxl" aria-label="Primary">
+      <a class="navbar-brand fw-bold" href="index.html">nathan<span class="brand-dot">.andmar.dev</span></a>
+      <div class="d-flex align-items-center gap-2 ms-lg-auto me-lg-3">
+        <button id="themeToggle" type="button" aria-label="Toggle light / dark theme" title="Toggle theme">
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun d-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav"
+                aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="primaryNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="experience.html">Experience</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 nav-cta" href="contact.html">Contact me</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container-xxl">
+
+    <!-- ================= PAGE HEAD ================= -->
+    <section class="page-head" aria-labelledby="page-title">
+      <p class="eyebrow mb-0" data-reveal>Experience</p>
+      <h1 id="page-title" data-reveal>Where I&rsquo;ve worked.</h1>
+      <p class="lead" data-reveal>Expand any entry for details. Most recent first.</p>
+    </section>
+
+    <!-- ================= TIMELINE / ACCORDION ================= -->
+    <section class="py-4 pb-5" aria-label="Experience timeline">
+      <div class="timeline">
+
+        <!-- TODO: replace with real entries, most recent first. Accordion = expandable details. -->
+        <div class="timeline-item" data-reveal>
+          <h3 class="h4 mb-1">[Company] &mdash; [Role]</h3>
+          <p class="timeline-meta mb-3">[City] &middot; [Month Year] &ndash; Present</p>
+          <div class="accordion" id="expAcc1">
+            <div class="accordion-item">
+              <h4 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#expC1" aria-expanded="false" aria-controls="expC1">
+                  Details
+                </button>
+              </h4>
+              <div id="expC1" class="accordion-collapse collapse" data-bs-parent="#expAcc1">
+                <div class="accordion-body text-muted-custom small">
+                  <ul class="mb-0 ps-3">
+                    <li>[Bullet: what you built, for whom, measurable impact if possible.]</li>
+                    <li>[Bullet: technology and scale — &ldquo;processed X events/day&rdquo;, &ldquo;served Y users&rdquo;.]</li>
+                    <li>[Bullet: a problem you solved end-to-end, not just a task you were assigned.]</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-reveal>
+          <h3 class="h4 mb-1">[Company] &mdash; [Role]</h3>
+          <p class="timeline-meta mb-3">[City] &middot; [Month Year] &ndash; [Month Year]</p>
+          <div class="accordion" id="expAcc2">
+            <div class="accordion-item">
+              <h4 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#expC2" aria-expanded="false" aria-controls="expC2">
+                  Details
+                </button>
+              </h4>
+              <div id="expC2" class="accordion-collapse collapse" data-bs-parent="#expAcc2">
+                <div class="accordion-body text-muted-custom small">
+                  <ul class="mb-0 ps-3">
+                    <li>[Bullet.]</li>
+                    <li>[Bullet.]</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= EDUCATION (same timeline) ================= -->
+        <div class="timeline-item" data-reveal>
+          <h3 class="h4 mb-1">[University] &mdash; B.S. Computer Science</h3>
+          <p class="timeline-meta mb-3">Expected [Month 2026]</p>
+          <div class="accordion" id="expAcc3">
+            <div class="accordion-item">
+              <h4 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#expC3" aria-expanded="false" aria-controls="expC3">
+                  Relevant coursework &amp; activities
+                </button>
+              </h4>
+              <div id="expC3" class="accordion-collapse collapse" data-bs-parent="#expAcc3">
+                <div class="accordion-body text-muted-custom small">
+                  <ul class="mb-0 ps-3">
+                    <!-- TODO: pick the courses that signal the role you're applying for -->
+                    <li>Operating Systems (CS 452) — [one line on what it covered / what you built]</li>
+                    <li>Computer Networks — [one line]</li>
+                    <li>Unix file permissions &amp; access control labs (CS 331)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="py-4 pb-5" aria-label="Contact call to action">
+      <div class="cta-banner" data-reveal>
+        <h2 class="display-serif mb-3">Curious about the full history?</h2>
+        <p class="text-muted-custom mx-auto mb-4" style="max-width: 28rem;">
+          The résumé has the complete list — I&rsquo;m happy to share it directly.
+        </p>
+        <a href="contact.html" class="btn btn-primary">Request my résumé</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer mt-auto">
+    <div class="container-xxl d-flex flex-wrap justify-content-between align-items-center gap-2 py-4">
+      <p class="mb-0 small text-body-secondary">&copy; <span id="year">2026</span> Nathan Marquis &middot; Self-hosted by design, served from the Cloudflare edge.</p>
+      <p class="mb-0 small text-body-secondary d-flex gap-3">
+        <a href="https://github.com/TODO" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/TODO" rel="me">LinkedIn</a>
+        <a href="mailto:nathanmarquis23@gmail.com">Email</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>

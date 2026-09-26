@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Nathan Marquis</title>
+  <meta name="description" content="Contact Nathan Marquis: email and professional profiles.">
+
+  <meta property="og:title" content="Contact — Nathan Marquis">
+  <meta property="og:description" content="Get in touch with Nathan Marquis.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nathan.andmar.dev/contact.html">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="contact">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header sticky-top">
+    <nav class="navbar navbar-expand-lg container-xxl" aria-label="Primary">
+      <a class="navbar-brand fw-bold" href="index.html">nathan<span class="brand-dot">.andmar.dev</span></a>
+      <div class="d-flex align-items-center gap-2 ms-lg-auto me-lg-3">
+        <button id="themeToggle" type="button" aria-label="Toggle light / dark theme" title="Toggle theme">
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun d-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav"
+                aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="primaryNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="experience.html">Experience</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 nav-cta" href="contact.html">Contact me</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container-xxl">
+
+    <!-- ================= PAGE HEAD ================= -->
+    <section class="page-head" aria-labelledby="page-title">
+      <p class="eyebrow mb-0" data-reveal>Contact</p>
+      <h1 id="page-title" data-reveal>Say hello.</h1>
+      <p class="lead" data-reveal>
+        Recruiting, collaborating, or just want to talk about self-hosting — my inbox is open.
+        I typically reply within a day or two.
+      </p>
+    </section>
+
+    <!-- ================= CONTACT CARDS ================= -->
+    <section class="py-4 pb-5" aria-label="Contact methods">
+      <div class="row g-4">
+
+        <!-- Email: primary channel. No form on purpose — a static site has no backend,
+             so mailto is the honest option (no fake "message sent" states). -->
+        <div class="col-lg-6" data-reveal>
+          <div class="card-surface h-100 d-flex flex-column">
+            <div class="card-icon">&#9993;</div>
+            <h3 class="h5 mb-2">Email</h3>
+            <p class="text-muted-custom small flex-grow-1">
+              The fastest way to reach me. For applications, include the role and a link to
+              your job posting — it helps me route things properly.
+            </p>
+            <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+              <a href="mailto:nathanmarquis23@gmail.com" class="btn btn-primary btn-sm">nathanmarquis23@gmail.com</a>
+              <!-- data-copy: site.js wires up the clipboard copy -->
+              <button type="button" class="btn btn-outline-light-custom btn-sm" data-copy="nathanmarquis23@gmail.com"
+                      aria-label="Copy email address to clipboard">
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODO: replace with real profiles -->
+        <div class="col-lg-6" data-reveal>
+          <div class="row g-4 h-100">
+            <div class="col-sm-6">
+              <a href="https://github.com/TODO" rel="me" class="stretched-link">
+                <div class="card-surface h-100">
+                  <div class="card-icon">&#128187;</div>
+                  <h3 class="h5 mb-2">GitHub</h3>
+                  <p class="text-muted-custom small mb-0">@[handle]</p>
+                </div>
+              </a>
+            </div>
+            <div class="col-sm-6">
+              <a href="https://www.linkedin.com/in/TODO" rel="me" class="stretched-link">
+                <div class="card-surface h-100">
+                  <div class="card-icon">&#128188;</div>
+                  <h3 class="h5 mb-2">LinkedIn</h3>
+                  <p class="text-muted-custom small mb-0">/in/[handle]</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= AVAILABILITY NOTE ================= -->
+      <div class="row g-4 mt-1" data-reveal>
+        <div class="col-12">
+          <div class="contact-card d-flex flex-wrap align-items-center gap-3">
+            <span class="status-line"><span class="status-dot"></span> available</span>
+            <!-- TODO: adjust to your real availability / location -->
+            <p class="text-muted-custom small mb-0">
+              Open to internship and new-grad roles &middot; [City, State] &mdash; open to relocation
+              &amp; remote.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer mt-auto">
+    <div class="container-xxl d-flex flex-wrap justify-content-between align-items-center gap-2 py-4">
+      <p class="mb-0 small text-body-secondary">&copy; <span id="year">2026</span> Nathan Marquis &middot; Self-hosted by design, served from the Cloudflare edge.</p>
+      <p class="mb-0 small text-body-secondary d-flex gap-3">
+        <a href="https://github.com/TODO" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/TODO" rel="me">LinkedIn</a>
+        <a href="mailto:nathanmarquis23@gmail.com">Email</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>
