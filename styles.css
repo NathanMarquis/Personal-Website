@@ -251,6 +251,18 @@ body[data-page="contact"] .nav-link[href="/contact.html"] {
   box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.7);
 }
 
+/* Invisible stretched link (index "More work" card): the ::after overlay must sit
+   above interactive content, or clicks fall through to whatever is on top. */
+.stretched-none {
+  position: relative;
+}
+.stretched-none::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .card-icon {
   width: 2.6rem; height: 2.6rem;
   border-radius: 0.75rem;
