@@ -6,6 +6,13 @@
     "enabled": true
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "exclude": [
+      ".git/**",
+      ".wrangler/**",
+      "_partials/**",
+      "README.md",
+      "wrangler.jsonc"
+    ]
   }
 }

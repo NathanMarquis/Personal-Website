@@ -30,7 +30,8 @@ Bootstrap transitions/collapses plus a tiny IntersectionObserver scroll-reveal.
 | `site.js` | Theme toggle, scroll-reveal, footer year, copy button |
 | `_partials/` | Source-of-truth nav/header/footer — **when you edit these, re-sync the 5 pages** |
 | `assets/css/bootstrap.min.css`, `assets/js/bootstrap.bundle.min.js` | Pinned Bootstrap 5.3.3 (self-hosted) |
-| `_headers` | Cloudflare Pages security headers (CSP etc.) |
+| `_headers` | Security headers (CSP etc.). **Format gotcha:** it's `path-glob → indented header lines`, e.g. `/*` then 2-space-indented `Name: value` pairs. No comments allowed — every non-blank line must parse as a glob or a header pair. This exact mistake broke the first deploy (error code 100324). |
+| `wrangler.jsonc` | Wrangler config for `npx wrangler deploy`. **`assets.exclude` keeps `.git/`, `_partials/`, README, and this file out of the public assets** — do not remove it; without it the whole repo (including git objects) gets published. (Wrangler reads no ignore *file*; exclusions live in this config.) |
 
 ### Keeping partials in sync
 
