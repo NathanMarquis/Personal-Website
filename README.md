@@ -12,6 +12,8 @@ Bootstrap transitions/collapses plus a tiny IntersectionObserver scroll-reveal.
   - `assets/js/bootstrap.bundle.min.js` — upstream Bootstrap, unmodified
     (sha256 `0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c`)
   - `site.js` — ~60 lines: footer year, theme toggle (localStorage), scroll-reveal, copy button
+- The self-hosted stylesheet is pinned too: `assets/css/bootstrap.min.css`
+  (sha256 `3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8`)
 - **CSP** (`_headers`): `script-src 'self'`, `connect-src 'none'`,
   `frame-ancestors 'none'`. No analytics, no forms (contact is `mailto:` — a static
   site has no backend, so there are no fake "message sent" states).
