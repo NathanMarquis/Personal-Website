@@ -325,12 +325,15 @@
       return { x: brand.getBoundingClientRect().right + 70, y: hdr.getBoundingClientRect().bottom - 13.5, vis: true };
     }
 
-    // is the cursor on something the heli would be in the way of? 2 = header bar, 1 = actual text, 0 = clear
+    // is the cursor on something the heli would be in the way of? 2 = header bar, 1 = a box with text in it
+    // (the whole box, padding included) or actual text, 0 = clear
+    var BOXES = '.card-surface, .plate, .cta-banner, .timeline-item, .accordion, .channels, .btn, .tag, .chip';
     var probeRange = document.createRange();
     function overText(x, y) {
       var e = document.elementFromPoint(x, y);   // the heli has pointer-events: none, so it never answers
       if (!e) return 0;
       if (e.closest('.site-header')) return 2;
+      if (e.closest(BOXES)) return 1;
       for (var n = e.firstChild; n; n = n.nextSibling) {
         if (n.nodeType !== 3 || !n.nodeValue.trim()) continue;
         probeRange.selectNodeContents(n);

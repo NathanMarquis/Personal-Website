@@ -129,7 +129,7 @@ stateDiagram-v2
 | Searchlight | A separate `div` with a conic-gradient cone and `mix-blend-mode: screen`, dark theme only, aimed at the cursor. |
 | Tilt | Driven by measured acceleration, so it leans forward when pushing and flares back when braking. |
 | Walls | A soft margin of one helicopter length from every window edge, plus a hard speed governor. |
-| No-go zones | Text and the header are off limits. The moment the cursor is over one, the helicopter stops chasing and wanders off to a spot low on the page on the far side of itself from the cursor. The moment the cursor leaves, it follows again. There is no delay either way, and its own inertia keeps the turns gentle. |
+| No-go zones | Text, the header, and any box with text in it (cards, the data plate, timeline entries, buttons, tags) are off limits, padding included. The moment the cursor is over one, the helicopter stops chasing and wanders off to a spot low on the page on the far side of itself from the cursor. The moment the cursor leaves, it follows again. There is no delay either way, and its own inertia keeps the turns gentle. |
 | Page change | Clicking a link while it is in the air sends it nose-right toward the right side as the page slides out, and it carries on across the next page until it leaves the screen. A landed helicopter rides out with the page instead. See the page transitions note under design choices. |
 | Dismiss | Shake the mouse back and forth. It flies home and lands on the pill. If the pill scrolls off screen it flies up and waits there. |
 
