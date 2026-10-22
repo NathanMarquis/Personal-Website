@@ -109,7 +109,7 @@ stateDiagram-v2
   Perched --> Liftoff: first mouse move
   Liftoff --> Follow
   Follow --> Explore: cursor over text or header
-  Explore --> Follow: cursor clear for 0.9 s
+  Explore --> Follow: cursor off the text, immediately
   Follow --> Crash: cursor touches the hitbox
   Explore --> Crash: cursor touches the hitbox
   Crash --> Follow: tumble finishes and it recovers
@@ -117,6 +117,9 @@ stateDiagram-v2
   Explore --> Flee: shake the mouse
   Flee --> Perched: lands back on the pill
   Perched --> Liftoff: hover it for 0.5 s
+  Follow --> Depart: a link is clicked
+  Explore --> Depart: a link is clicked
+  Depart --> [*]: flies on across the next page
 ```
 
 | Behavior | How it works |
@@ -126,6 +129,8 @@ stateDiagram-v2
 | Searchlight | A separate `div` with a conic-gradient cone and `mix-blend-mode: screen`, dark theme only, aimed at the cursor. |
 | Tilt | Driven by measured acceleration, so it leans forward when pushing and flares back when braking. |
 | Walls | A soft margin of one helicopter length from every window edge, plus a hard speed governor. |
+| No-go zones | Text and the header are off limits. The moment the cursor is over one, the helicopter stops chasing and wanders off to a spot low on the page on the far side of itself from the cursor. The moment the cursor leaves, it follows again. There is no delay either way, and its own inertia keeps the turns gentle. |
+| Page change | Clicking a link while it is in the air sends it nose-right toward the right side as the page slides out, and it carries on across the next page until it leaves the screen. A landed helicopter rides out with the page instead. See the page transitions note under design choices. |
 | Dismiss | Shake the mouse back and forth. It flies home and lands on the pill. If the pill scrolls off screen it flies up and waits there. |
 
 Tuning constants such as `MAX_SPEED`, `HELI_LEN`, and `SHAKE_NEED` are named at the top of
