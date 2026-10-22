@@ -304,17 +304,18 @@
     });
 
     // where it can land: on the "open to opportunities" pill, else on the header's bottom edge
+    // skid bottoms sit 13.4px below the sprite center, so the spot is 13.5px above the surface
     function pillSpot() {
       var pill = document.querySelector('.status-line');
       if (!pill) return null;
       var r = pill.getBoundingClientRect();
       var shown = !pill.hasAttribute('data-reveal') || pill.classList.contains('revealed');
-      return { x: r.left + r.width / 2, y: r.top - 11, vis: shown && r.top > 91 && r.bottom < window.innerHeight };
+      return { x: r.left + r.width / 2, y: r.top - 13.5, vis: shown && r.top > 91 && r.bottom < window.innerHeight };
     }
     function ledgeSpot() {
       var hdr = document.querySelector('.site-header'), brand = document.querySelector('.navbar-brand');
       if (!hdr || !brand) return { x: 80, y: 80, vis: true };
-      return { x: brand.getBoundingClientRect().right + 70, y: hdr.getBoundingClientRect().bottom - 11, vis: true };
+      return { x: brand.getBoundingClientRect().right + 70, y: hdr.getBoundingClientRect().bottom - 13.5, vis: true };
     }
 
     // is the cursor on something the heli would be in the way of? 2 = header bar, 1 = actual text, 0 = clear
