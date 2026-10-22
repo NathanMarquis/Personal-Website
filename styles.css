@@ -1,5 +1,5 @@
 /* ============================================================
-   nathan.andmar.dev — custom design layer on top of Bootstrap 5.3.3
+   nathan.andmar.dev: custom design layer on top of Bootstrap 5.3.3
    (bootstrap.min.css is loaded first; this file wins on conflicts)
    Dark by default, light theme via [data-bs-theme="light"].
    No web fonts: editorial serif display + system sans body.
@@ -77,7 +77,7 @@ a { transition: color 0.2s ease; }
 }
 .nav-link:hover { color: var(--fg) !important; background: var(--accent-soft); }
 
-/* active page indicator — driven by body[data-page] */
+/* active page indicator, driven by body[data-page] */
 body[data-page="home"] .nav-link[href="/"],
 body[data-page="about"] .nav-link[href="/about.html"],
 body[data-page="projects"] .nav-link[href="/projects.html"],
@@ -438,6 +438,28 @@ body[data-page="contact"] .nav-link[href="/contact.html"] {
 }
 .heli-rotor { animation: heli-rotor 0.1s linear infinite alternate; }
 .heli-tblades { transform-origin: -3.4px 14.9px; animation: heli-spin 0.16s linear infinite; }
+/* one-time intro hint: shake the mouse to send the helicopter home */
+.heli-hint {
+  position: fixed; left: 50%; top: 12vh; transform: translateX(-50%); z-index: 1058;
+  display: flex; align-items: center; gap: 0.9rem;
+  max-width: min(92vw, 30rem); padding: 0.8rem 1.1rem;
+  color: var(--fg);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  border: 1px solid var(--border); border-radius: 1rem;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  pointer-events: none; opacity: 0; transition: opacity 0.8s ease;
+}
+.heli-hint.show { opacity: 1; }
+.heli-hint svg { width: 120px; flex: none; overflow: visible; }
+.heli-hint p { margin: 0; font-size: 0.92rem; line-height: 1.4; }
+.heli-hint-line { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; opacity: 0.5; }
+.heli-hint-cursor { fill: var(--fg); stroke: var(--bg); stroke-width: 1; stroke-linejoin: round; opacity: 0.9;
+  animation: heli-hint-sweep 0.38s ease-in-out infinite alternate; }
+@keyframes heli-hint-sweep {
+  from { transform: translate(8px, 12px); }
+  to   { transform: translate(98px, 12px); }
+}
+
 /* hint shown above the helicopter after it's been shooed off */
 .heli-tip {
   position: fixed; left: 0; top: 0; z-index: 1061;

@@ -1,4 +1,4 @@
-/* nathan.andmar.dev — site.js
+/* nathan.andmar.dev: site.js
    Self-hosted Bootstrap 5.3.3 is loaded separately; this file only does:
    1) current-year in the footer, 2) scroll-reveal transitions via IntersectionObserver.
    No analytics, no third parties, no network calls. */
@@ -164,6 +164,19 @@
     tip.textContent = 'Hover over me to make me follow you again.';
     document.body.appendChild(tip);
 
+    // Intro hint: a faint short line with a cursor darting back and forth along it, saying how to shoo the heli.
+    // Shown on every home page load, once the heli is visible; fades out by itself.
+    var hint = document.createElement('div');
+    hint.className = 'heli-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML =
+      '<svg viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg">' +
+        '<line class="heli-hint-line" x1="8" y1="12" x2="108" y2="12"/>' +
+        '<path class="heli-hint-cursor" d="M0 0 L0 15 L4 11.5 L7 18 L9.5 17 L6.6 10.5 L12 10.5 Z"/>' +
+      '</svg>' +
+      '<p>Shake your mouse back and forth and the helicopter will stop bothering you.</p>';
+    document.body.appendChild(hint);
+
     var lamp = document.createElement('div');
     lamp.className = 'heli-lamp';
     lamp.setAttribute('aria-hidden', 'true');
@@ -180,7 +193,7 @@
     var FACE_FAST = 170;                  // px/s needed before it yaws around; slower moves it just backs/sidesteps
     var s = { x: 0, y: 0, vx: 0, vy: 0, rot: 0, spin: 0, theta: 0, want: 0,
               mx: -9999, my: -9999, mvx: 0, mvy: 0, mode: 'perch', until: 0, grace: 0, phase: 0,
-              seen: true, hasMouse: false, intro: true, introAt: 0, inside: false, hold: 0, land: 0, tipOn: false, tipUntil: 0, spot: null, side: -1, tuck: false,
+              seen: true, hasMouse: false, intro: true, introAt: 0, inside: false, hold: 0, land: 0, fleeAt: 0, hintAt: 0, tipOn: false, tipUntil: 0, spot: null, side: -1, tuck: false,
               over: 0, validFor: 0, probeT: 0, probeX: -1, probeY: -1, wp: null, xStart: 0, ramp: -10, ax: 0, ay: 0, pvx: 0, tax: 0,
               top: 0, yaw: 0, aim: 40, beam: 0, cStart: 0, cDur: 1 };   // fall views: top = 0..1 how far it is looking down on it, yaw = extra turn (rad) to show the far side
     // side: -1 = hover northwest of the cursor, +1 = northeast; tuck: cursor is under it, so it holds still
@@ -286,7 +299,7 @@
       var shakes = Math.max(trackShake(shakeX, e.clientX, nt), trackShake(shakeY, e.clientY, nt));
       if (shakes >= SHAKE_NEED && (s.mode === 'fly' || s.mode === 'explore' || s.mode === 'crash')) {
         shakeX.hits = []; shakeY.hits = [];
-        flee();
+        flee(nt);
       }
     });
 
@@ -354,8 +367,9 @@
     }
 
     // had enough: pull out of whatever it was doing and go sit on the pill
-    function flee() {
+    function flee(t) {
       s.mode = 'flee';
+      s.fleeAt = t;
       s.land = 0;                         // 0: fly to the hover point above the pill, 1: lower onto it
       s.hold = 0;
       s.tuck = false;
@@ -489,10 +503,12 @@
           }
           s.rot += (pitchTarget() - s.rot) * Math.min(1, dt * 8);
           if (s.vx > 80) s.want = 0; else if (s.vx < -80) s.want = Math.PI;
-          // cursor rests on it on the way home: it changes its mind and chases again
-          var fx = (s.mx - s.x) / 38, fy = (s.my - s.y) / 24;
-          s.hold = (fx * fx + fy * fy < 1) ? s.hold + dt : 0;
-          if (s.hold >= 0.35) {
+          // cursor catches up with it on the way home: it changes its mind and chases again. A touch is
+          // enough (it's moving, so nobody can rest on it), but not during the first moments, while the
+          // shake that sent it home is still winding down.
+          var fx = (s.mx - s.x) / 46, fy = (s.my - s.y) / 30;
+          s.hold = (fx * fx + fy * fy < 1 && t - s.fleeAt > 0.8) ? s.hold + dt : 0;
+          if (s.hold >= 0.1) {
             resume(t);
           } else if (s.land === 1 && dHome < 1.5 && Math.abs(sp.x - s.x) < 3) {
             s.x = sp.x; s.y = sp.y; s.vx = 0; s.vy = 0;
@@ -509,6 +525,10 @@
           s.rot += (0 - s.rot) * Math.min(1, dt * 8);
           el.classList.toggle('on', ps.vis);
           tip.classList.toggle('show', s.tipOn && t < s.tipUntil && ps.vis);
+          if (hint && !s.hintAt && ps.vis) {   // first time it's on screen: show the hint
+            s.hintAt = t;
+            hint.classList.add('show');
+          }
           tip.style.transform = 'translate(' + clamp(s.x, 110, window.innerWidth - 110).toFixed(1) + 'px,' +
             (s.y - 24).toFixed(1) + 'px) translate(-50%, -100%)';
           var px = (s.mx - s.x) / 38, py = (s.my - s.y) / 24;
@@ -534,6 +554,10 @@
           if (dUp < 3) resume(t);
         }
         s.inside = inside;
+        if (hint && s.hintAt && t - s.hintAt > 6) {   // brief: fade it out and let go of it
+          hint.classList.remove('show');
+          hint = null;
+        }
         if (s.mode === 'fly' || s.mode === 'explore' || s.mode === 'crash') wallGovern();
         s.tax += ((s.vx - s.pvx) / dt - s.tax) * Math.min(1, dt * 8);   // measured horizontal acceleration, smoothed
         s.pvx = s.vx;
