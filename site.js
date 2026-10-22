@@ -309,7 +309,7 @@
       if (!pill) return null;
       var r = pill.getBoundingClientRect();
       var shown = !pill.hasAttribute('data-reveal') || pill.classList.contains('revealed');
-      return { x: r.left + r.width / 2, y: r.top - 11, vis: shown && r.top > 70 && r.bottom < window.innerHeight };
+      return { x: r.left + r.width / 2, y: r.top - 11, vis: shown && r.top > 91 && r.bottom < window.innerHeight };
     }
     function ledgeSpot() {
       var hdr = document.querySelector('.site-header'), brand = document.querySelector('.navbar-brand');
@@ -374,8 +374,7 @@
       s.hold = 0;
       s.tuck = false;
       s.rot = wrap180(s.rot);
-      var p = pillSpot();
-      s.spot = (p && p.vis) ? pillSpot : ledgeSpot;
+      s.spot = pillSpot() ? pillSpot : ledgeSpot;   // always the pill; if it's off screen the heli leaves upward and waits there
     }
     // back to following the cursor (it was hovered over, or the user invited it back)
     function resume(t) {
@@ -387,6 +386,7 @@
       s.tipOn = false;
       tip.classList.remove('show');
       el.classList.remove('perched');
+      el.style.visibility = '';
       el.classList.add('on');
     }
 
@@ -488,9 +488,23 @@
           // Head home. First to a hover point straight above the landing spot, slowing steadily so it
           // never passes it; then lower straight down onto the spot.
           var sp = s.spot();
-          var hoverY = Math.max(sp.y - HOVER_ABOVE, 24);
-          var dHome;
-          if (s.land === 0) {
+          var hoverY = Math.max(sp.y - HOVER_ABOVE, 76);   // never up under the header bar
+          var dHome = 1e9;
+          if (!sp.vis) {
+            // The pill isn't on screen (scrolled away). Fly straight up and off the top; from there it
+            // counts as landed: it waits on the pill, unseen, and is already there when it scrolls back.
+            s.land = 0;
+            glideTo(s.x, -90, dt, MAX_SPEED, 220);
+            s.rot += (pitchTarget() - s.rot) * Math.min(1, dt * 8);
+            if (s.y < -50) {
+              s.mode = 'perch';
+              s.hold = 0; s.want = 0; s.vx = 0; s.vy = 0;
+              s.tipOn = false;
+              el.style.visibility = 'hidden';    // instant: no flash as it snaps over to the pill
+              el.classList.remove('on');
+              el.classList.add('perched');
+            }
+          } else if (s.land === 0) {
             dHome = glideTo(sp.x, hoverY, dt, MAX_SPEED, 220);
             if (dHome < 8) s.land = 1;     // close and slow: commit to the descent
           } else {
@@ -501,16 +515,18 @@
             s.vy += (sink - s.vy) * Math.min(1, dt * 5);
             s.vx += ((sp.x - s.x) * 6 - s.vx) * Math.min(1, dt * 10);
           }
-          s.rot += (pitchTarget() - s.rot) * Math.min(1, dt * 8);
+          if (sp.vis) s.rot += (pitchTarget() - s.rot) * Math.min(1, dt * 8);
           if (s.vx > 80) s.want = 0; else if (s.vx < -80) s.want = Math.PI;
           // cursor catches up with it on the way home: it changes its mind and chases again. A touch is
           // enough (it's moving, so nobody can rest on it), but not during the first moments, while the
           // shake that sent it home is still winding down.
           var fx = (s.mx - s.x) / 46, fy = (s.my - s.y) / 30;
-          s.hold = (fx * fx + fy * fy < 1 && t - s.fleeAt > 0.8) ? s.hold + dt : 0;
-          if (s.hold >= 0.1) {
+          s.hold = (sp.vis && fx * fx + fy * fy < 1 && t - s.fleeAt > 0.8) ? s.hold + dt : 0;
+          if (s.mode !== 'flee') {
+            // went to wait off screen this frame
+          } else if (s.hold >= 0.1) {
             resume(t);
-          } else if (s.land === 1 && dHome < 1.5 && Math.abs(sp.x - s.x) < 3) {
+          } else if (sp.vis && s.land === 1 && dHome < 1.5 && Math.abs(sp.x - s.x) < 3) {
             s.x = sp.x; s.y = sp.y; s.vx = 0; s.vy = 0;
             s.mode = 'perch';             // touchdown
             s.hold = 0;
@@ -521,8 +537,9 @@
           }
         } else if (s.mode === 'perch') {  // perched: ride along with the pill, wait to be invited back
           var ps = s.spot();
-          s.x = ps.x; s.y = ps.y; s.vx = 0; s.vy = 0;
+          s.x = ps.x; s.y = ps.y; s.vx = 0; s.vy = 0;     // re-read the pill's spot every frame, so it rides along with scrolling
           s.rot += (0 - s.rot) * Math.min(1, dt * 8);
+          if (ps.vis && el.style.visibility) el.style.visibility = '';
           el.classList.toggle('on', ps.vis);
           tip.classList.toggle('show', s.tipOn && t < s.tipUntil && ps.vis);
           if (hint && !s.hintAt && ps.vis) {   // first time it's on screen: show the hint
@@ -549,7 +566,7 @@
           }
         } else {                          // liftoff: rise straight up to the hover point, then start chasing
           var ls = s.spot();
-          var dUp = glideTo(ls.x, Math.max(ls.y - HOVER_ABOVE, 24), dt, 60, 50);
+          var dUp = glideTo(ls.x, Math.max(ls.y - HOVER_ABOVE, 76), dt, 60, 50);
           s.rot += (0 - s.rot) * Math.min(1, dt * 8);
           if (dUp < 3) resume(t);
         }
