@@ -291,12 +291,13 @@
 
     // ---- EXPERIMENTAL cargo hook -------------------------------------------------------------------
     // Click while it hovers by the cursor: the heli moves right over the cursor and lowers a hook to it.
-    // The hook grabs the box or text under it and carries it, swinging like a pendulum. Click again to
+    // The hook is sticky: the first box or text it touches latches on, and it drags it around, swinging like a pendulum. Click again to
     // let go (the load springs back home); click with nothing on the hook to reel it in. Clicks on links
     // and buttons are left alone (they reset the hook instead).
-    var HOOK_DROP = 110;                  // px: the heli hovers this far above the cursor while the hook is out
+    var HOOK_ROPE = 56;                   // px: the rope never changes length
+    var HOOK_DROP = HOOK_ROPE + 11;       // the heli hovers this far above the cursor, so the hook tip sits on it
     var HOOK_TEXT = 'h1, h2, h3, h4, p, li, dt, dd';
-    var hook = { state: 'stowed', len: 0, t0: 0, th: 0, thv: 0, load: null, g: null, sx0: 0, sy0: 0, tx: 0, ty: 0 };
+    var hook = { state: 'stowed', len: 0, t0: 0, cool: 0, th: 0, thv: 0, load: null, g: null, sx0: 0, sy0: 0, tx: 0, ty: 0 };
     var hookSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     hookSvg.setAttribute('class', 'heli-hook');
     hookSvg.setAttribute('aria-hidden', 'true');
@@ -335,27 +336,24 @@
       // pendulum: swings out when the heli accelerates, settles by itself
       hook.thv += (-14 * hook.th - 3 * hook.thv - s.tax * 0.0025) * dt;
       hook.th = clamp(hook.th + hook.thv * dt, -0.6, 0.6);
-      if (hook.state === 'lower') {
-        var want = clamp(s.my - by, 50, 300);
-        hook.len = Math.min(want, hook.len + 520 * dt);
-        if (hook.len >= want - 2 && (Math.abs(s.x - s.mx) < 50 || t - hook.t0 > 2.5)) {
-          var tipX = bx + hook.len * Math.sin(hook.th), tipY = by + hook.len * Math.cos(hook.th);
-          var hit = grabbable(tipX, tipY);
-          if (hit) {
-            var r = hit.getBoundingClientRect();
-            hook.load = hit;
-            hook.g = { x: tipX - r.left, y: tipY - r.top };            // where on the load the hook caught it
-            hook.gx0 = tipX; hook.gy0 = tipY; hook.sx0 = window.scrollX; hook.sy0 = window.scrollY;
-            hit.style.position = 'relative';
-            hit.style.zIndex = '1055';
-            hit.style.transition = 'none';
-            hit.style.pointerEvents = 'none';
-            hit.style.transformOrigin = hook.g.x.toFixed(1) + 'px ' + hook.g.y.toFixed(1) + 'px';
-            hook.state = 'carry';
-            document.documentElement.style.overflowX = 'hidden';   // a swinging load shouldn't add a scrollbar
-          } else if (t - hook.t0 > 1.2) {
-            hook.state = 'hang';
-          }
+      if (hook.state === 'lower' || hook.state === 'hang') {
+        // fixed-length rope, and the hook is sticky: the first box or text it touches latches on (after a
+        // short cooldown following a release, so it doesn't re-grab what it just dropped)
+        hook.len = Math.min(HOOK_ROPE, hook.len + 1200 * dt);
+        var tipX = bx + hook.len * Math.sin(hook.th), tipY = by + hook.len * Math.cos(hook.th);
+        var hit = t > hook.cool ? grabbable(tipX, tipY) : null;
+        if (hit) {
+          var r = hit.getBoundingClientRect();
+          hook.load = hit;
+          hook.g = { x: tipX - r.left, y: tipY - r.top };            // where on the load the hook caught it
+          hook.gx0 = tipX; hook.gy0 = tipY; hook.sx0 = window.scrollX; hook.sy0 = window.scrollY;
+          hit.style.position = 'relative';
+          hit.style.zIndex = '1055';
+          hit.style.transition = 'none';
+          hit.style.pointerEvents = 'none';
+          hit.style.transformOrigin = hook.g.x.toFixed(1) + 'px ' + hook.g.y.toFixed(1) + 'px';
+          hook.state = 'carry';
+          document.documentElement.style.overflowX = 'hidden';   // a swinging load shouldn't add a scrollbar
         }
       } else if (hook.state === 'retract') {
         hook.len -= 650 * dt;
@@ -369,7 +367,7 @@
       hookSvg.style.display = '';
       rope.setAttribute('x1', bx.toFixed(1)); rope.setAttribute('y1', by.toFixed(1));
       rope.setAttribute('x2', tx.toFixed(1)); rope.setAttribute('y2', ty.toFixed(1));
-      hookG.setAttribute('transform', 'translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ') rotate(' + (hook.th * 57.3).toFixed(1) + ')');
+      hookG.setAttribute('transform', 'translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ') rotate(' + (hook.th * 57.3).toFixed(1) + ') scale(0.6)');
     }
     function hookClick(t) {
       if (hook.state === 'stowed') {
@@ -378,6 +376,7 @@
       } else if (hook.state === 'carry') {
         loadFree(true);
         hook.state = 'hang';
+        hook.cool = t + 1.2;
       } else if (hook.state !== 'retract') {
         hook.state = 'retract';
       }
