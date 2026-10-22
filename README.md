@@ -1,76 +1,188 @@
-# nathan.andmar.dev: static showcase site (multi-page, Bootstrap 5.3.3)
+# nathan.andmar.dev
 
-A five-page personal site: **Home · About · Projects · Experience · Contact**.
-Styling is Bootstrap + a custom design layer (`styles.css`); motion comes from
-Bootstrap transitions/collapses plus a tiny IntersectionObserver scroll-reveal.
+My personal site: five static pages, one stylesheet, one script, no build step.
+It is served from Cloudflare's edge and deployed straight from this repo.
 
-## Security posture (important: read this)
+**Pages:** Home, About, Projects, Experience, Contact
 
-- **No third-party requests.** Bootstrap CSS/JS are **self-hosted** in `assets/`
-  (pinned to 5.3.3, downloaded once). The page never talks to any CDN or tracker.
-- **Only two scripts on the whole site**, both served from this domain:
+The look is a cockpit display crossed with a security console: navy panel,
+a single teal accent, DIN-style headings, monospace for data, square corners with
+HUD-style corner brackets. The home page also has a small UH-1 Huey that follows the
+cursor (more on that below).
+
+## How the pieces fit together
+
+```mermaid
+flowchart LR
+  subgraph repo["GitHub repo (this folder)"]
+    direction TB
+    partials["_partials/<br/>header.html, footer.html<br/><i>source of truth</i>"]
+    pages["5 HTML pages<br/>index, about, projects,<br/>experience, contact"]
+    css["styles.css<br/>design layer"]
+    js["site.js<br/>theme, reveal, copy,<br/>helicopter (home only)"]
+    bs["assets/<br/>Bootstrap 5.3.3<br/>CSS + JS, pinned"]
+    headers["_headers<br/>CSP + security headers"]
+    wr["wrangler.jsonc<br/>assets.exclude"]
+    partials -. "copied into<br/>(manual sync)" .-> pages
+  end
+
+  subgraph cf["Cloudflare"]
+    direction TB
+    deploy["Pages deploy<br/>no build command, output dir ."]
+    edge["Edge network<br/>TLS + custom domain"]
+    deploy --> edge
+  end
+
+  browser["Visitor's browser"]
+
+  repo -- "git push" --> deploy
+  wr -. "keeps .git, _partials,<br/>README out of the upload" .-> deploy
+  headers -. "applied to every response" .-> edge
+  edge -- "HTML, CSS, JS<br/>same origin only" --> browser
+
+  pages --> css
+  pages --> bs
+  pages --> js
+```
+
+### What each piece does
+
+| Piece | Role |
+|-------|------|
+| `index.html`, `about.html`, `projects.html`, `experience.html`, `contact.html` | The pages. Each one is fully assembled HTML, so there is nothing to render at request time. |
+| `_partials/header.html`, `_partials/footer.html` | Source of truth for the nav and footer. Edit these first, then copy into all five pages. |
+| `styles.css` | The whole visual design, layered on top of Bootstrap. Colors, type, and spacing are CSS variables at the top of the file, with a light theme overriding the same variables. |
+| `site.js` | Footer year, theme toggle (saved in `localStorage` under `site-theme`), scroll reveal, copy-to-clipboard button, and the helicopter. |
+| `assets/css`, `assets/js` | Bootstrap 5.3.3, self-hosted and pinned. Used for the grid, navbar, collapse, and accordion. |
+| `_headers` | Content Security Policy and other security headers, applied by Cloudflare. |
+| `wrangler.jsonc` | Deploy config for `npx wrangler deploy`. Its `assets.exclude` list keeps repo internals out of the published site. |
+| `resume.pdf`, `favicon.svg` | Static files served as-is. |
+
+## How it was made
+
+1. **Plain HTML first.** Five pages, hand-written, sharing one nav and footer. No
+   framework, no bundler, no package manager. A static site has nothing to compile, so
+   deploys are just "upload these files".
+2. **Bootstrap for structure only.** The grid, navbar, collapse, and accordion come from
+   Bootstrap. Everything you can actually see (palette, type, brackets, plate) lives in
+   `styles.css` and overrides Bootstrap's defaults, including its blue accordion colors.
+3. **Design tokens, then components.** All colors, radii, and fonts are variables in
+   `:root`, with a `[data-bs-theme="light"]` block that swaps the same names. Components
+   only use the variables, so the theme toggle is one attribute on `<html>`.
+4. **Small, boring JavaScript.** One file, no dependencies, no network calls. Anything
+   decorative is skipped for touch devices and for visitors who prefer reduced motion.
+5. **Locked down by default.** The CSP only allows resources from this same origin, which
+   shapes the code: no inline styles, no CDNs, no web fonts, no analytics.
+6. **Deployed from git.** Pushing to `main` triggers a Cloudflare Pages deploy. There is
+   no build command, and the output directory is the repo root.
+
+### Design choices
+
+- **Aerospace plus security.** Navy instrument-panel background, one teal accent (like
+  cyan data on a glass cockpit), amber reserved for the helicopter's searchlight.
+- **Type.** Headings use a DIN-style system stack (Bahnschrift on Windows, DIN Alternate
+  on Mac, Arial elsewhere). Dates and labels are monospace. No web fonts are loaded.
+- **Structure as information.** Corner brackets mark the content blocks, the hero shows a
+  plain-facts "data plate", and section titles end in a drafting tick.
+- **Little motion.** Fade-ins are limited to the hero and subpages, and everything honors
+  `prefers-reduced-motion`.
+
+## The helicopter
+
+On the home page, a UH-1 Huey perches on the "open to opportunities" pill. Move the mouse
+and it lifts off and hovers beside the cursor. It lives entirely in `initHelicopter()` in
+`site.js` and draws itself as inline SVG, so it adds no files or requests.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Perched
+  Perched --> Liftoff: first mouse move
+  Liftoff --> Follow
+  Follow --> Explore: cursor over text or header
+  Explore --> Follow: cursor clear for 0.9 s
+  Follow --> Crash: cursor touches the hitbox
+  Explore --> Crash: cursor touches the hitbox
+  Crash --> Follow: tumble finishes and it recovers
+  Follow --> Flee: shake the mouse
+  Explore --> Flee: shake the mouse
+  Flee --> Perched: lands back on the pill
+  Perched --> Liftoff: hover it for 0.5 s
+```
+
+| Behavior | How it works |
+|----------|--------------|
+| Gating | Created only when `body[data-page="home"]`, a fine pointer with hover exists, and reduced motion is off. |
+| Sprite | One SVG with four views (side, top, nose-on, rotor) that it switches between while turning or tumbling. |
+| Searchlight | A separate `div` with a conic-gradient cone and `mix-blend-mode: screen`, dark theme only, aimed at the cursor. |
+| Tilt | Driven by measured acceleration, so it leans forward when pushing and flares back when braking. |
+| Walls | A soft margin of one helicopter length from every window edge, plus a hard speed governor. |
+| Dismiss | Shake the mouse back and forth. It flies home and lands on the pill. If the pill scrolls off screen it flies up and waits there. |
+
+Tuning constants such as `MAX_SPEED`, `HELI_LEN`, and `SHAKE_NEED` are named at the top of
+`initHelicopter()`.
+
+## Security posture
+
+- **No third-party requests.** Bootstrap is self-hosted in `assets/` and pinned to 5.3.3.
+- **Two scripts only**, both served from this domain:
   - `assets/js/bootstrap.bundle.min.js`: upstream Bootstrap, unmodified
     (sha256 `0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c`)
-  - `site.js`: footer year, theme toggle (localStorage), scroll-reveal, copy button, cursor helicopter (home page only)
-- The self-hosted stylesheet is pinned too: `assets/css/bootstrap.min.css`
+  - `site.js`: everything above
+- **Pinned stylesheet:** `assets/css/bootstrap.min.css`
   (sha256 `3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8`)
-- **CSP** (`_headers`): `script-src 'self'`, `connect-src 'none'`,
-  `frame-ancestors 'none'`. No analytics, no forms (contact is `mailto:`, a static
-  site has no backend, so there are no fake "message sent" states).
-- Home server not in the request path; Cloudflare's edge serves everything.
+- **CSP** (`_headers`): `default-src 'self'`, `script-src 'self'`, `style-src 'self'`,
+  `connect-src 'none'`, `frame-ancestors 'none'`. That means no inline `<style>` or
+  `style=""` attributes in markup (setting `el.style` from JavaScript is fine).
+- **No backend.** Contact is a `mailto:` link, with no forms and no fake "message sent" states.
 
-## Files
+## Working on it
 
-| File | Purpose |
-|------|---------|
-| `index.html` | Home: hero, what-I-do cards, featured project, CTA |
-| `about.html` | Story, "how I work" values, skills chips, certifications |
-| `projects.html` | Card grid (replace placeholders, delete unused cards) |
-| `experience.html` | Timeline + Bootstrap accordion details, education entry |
-| `contact.html` | Email card with copy-to-clipboard, profile links, availability |
-| `styles.css` | Custom design layer on top of Bootstrap (dark default + light theme) |
-| `site.js` | Theme toggle, scroll-reveal, footer year, copy button, cursor helicopter (home page only) |
-| `_partials/` | Source-of-truth nav/header/footer: **when you edit these, re-sync the 5 pages** |
-| `assets/css/bootstrap.min.css`, `assets/js/bootstrap.bundle.min.js` | Pinned Bootstrap 5.3.3 (self-hosted) |
-| `_headers` | Security headers (CSP etc.). **Format gotcha:** it's `path-glob → indented header lines`, e.g. `/*` then 2-space-indented `Name: value` pairs. No comments allowed: every non-blank line must parse as a glob or a header pair. This exact mistake broke the first deploy (error code 100324). |
-| `wrangler.jsonc` | Wrangler config for `npx wrangler deploy`. **`assets.exclude` keeps `.git/`, `_partials/`, README, and this file out of the public assets**: do not remove it; without it the whole repo (including git objects) gets published. (Wrangler reads no ignore *file*; exclusions live in this config.) |
+### Run it locally
 
-### Keeping partials in sync
+```sh
+python3 -m http.server 8000
+```
 
-The five pages are fully assembled HTML (no build step, no SSI: Cloudflare Pages
-won't expand `<!--#include-->`). If you change the nav or footer, edit it in
-`_partials/header.html` / `_partials/footer.html`, then copy the changed block into
-all five pages. A quick check:
+Open <http://localhost:8000>. The CSP is not enforced locally, so check for inline styles
+yourself. If a CSS change does not show up, hard-reload (`Ctrl+Shift+R`): Python's server
+sends no cache headers and browsers hold on to the stylesheet.
+
+### Keeping the nav and footer in sync
+
+Pages are fully assembled HTML (Cloudflare Pages does not expand `<!--#include-->`). When
+you change the nav or footer, edit `_partials/` first, then copy the block into all five
+pages. Check for drift:
 
 ```sh
 for f in index about projects experience contact; do
   diff <(sed -n '/<header class="site-header/,/<\/header>/p' _partials/header.html) \
        <(sed -n '/<header class="site-header/,/<\/header>/p' $f.html) >/dev/null \
     && echo "$f: nav OK" || echo "$f: NAV DRIFT"
+  diff <(sed -n '/<footer/,/<\/footer>/p' _partials/footer.html) \
+       <(sed -n '/<footer/,/<\/footer>/p' $f.html) >/dev/null \
+    && echo "$f: footer OK" || echo "$f: FOOTER DRIFT"
 done
 ```
 
-## Deploy (Cloudflare Pages, free)
+### Deploy (Cloudflare Pages, free)
 
-1. Push this folder to a GitHub repo.
-2. Cloudflare → **Workers & Pages** → **Create application** → **Pages** → connect repo.
+1. Push this repo to GitHub.
+2. Cloudflare, then **Workers & Pages**, **Create application**, **Pages**, connect the repo.
    Build command: *none*. Build output directory: `.`
-3. Pages project → **Custom domains** → `nathan.andmar.dev`.
-   The CNAME Cloudflare creates overrides the wildcard A record for this hostname only;
-   all tailnet services keep working untouched. Cert is automatic.
+3. In the Pages project, open **Custom domains** and add `nathan.andmar.dev`.
+   Cloudflare creates the CNAME and the certificate automatically.
 
-## Content checklist (grep for TODO)
+Or deploy from a terminal with `npx wrangler deploy`.
 
-- [ ] About: real story + "at a glance" facts
-- [ ] Projects: replace placeholder cards, delete unused ones
-- [ ] Experience: real roles (accordion bullets), education coursework
-- [ ] Contact: GitHub/LinkedIn handles, availability line
-- [ ] Footer: GitHub/LinkedIn URLs on every page
-- [ ] Optional: host `resume.pdf` at repo root, link from Contact
+### Deploy gotchas
 
-## Design notes
+Both of these broke a real deploy:
 
-- Dark by default with a light theme toggle (persisted in localStorage).
-- Editorial serif display type (system Palatino stack) against system sans body: no web fonts.
-- Scroll-reveal via IntersectionObserver; fully disabled under `prefers-reduced-motion`.
-- Responsive: Bootstrap grid, hamburger nav on mobile.
+- **`_headers` format.** A path glob line, followed by 2-space-indented `Name: value`
+  lines. No comments are allowed: every non-blank line must parse as a glob or a header
+  pair, or the deploy fails with error 100324.
+- **`wrangler.jsonc` `assets.exclude` is load-bearing.** It keeps `.git/`, `_partials/`,
+  this README, and the config itself out of the published assets. Wrangler reads no ignore
+  file, so if the list is removed the whole repo, git objects included, gets published.
+  Anything else you add to the repo root that should not go public (reference images,
+  notes) must be added here too.
