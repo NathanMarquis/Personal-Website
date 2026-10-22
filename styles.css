@@ -2,35 +2,36 @@
    nathan.andmar.dev: custom design layer on top of Bootstrap 5.3.3
    (bootstrap.min.css is loaded first; this file wins on conflicts)
    Dark by default, light theme via [data-bs-theme="light"].
-   No web fonts: editorial serif display + system sans body.
+   No web fonts: DIN-style system display face + system sans body + mono for data.
    ============================================================ */
 
 :root {
-  --bg: #14160f;
-  --surface: #1a1d14;
-  --surface-2: #21251a;
-  --border: rgba(233, 230, 218, 0.1);
-  --fg: #e9e6da;
-  --muted: #a3a693;
-  --accent: #e0a526;
-  --accent-ink: #1a1608;
-  --accent-soft: rgba(224, 165, 38, 0.13);
-  --radius: 0.5rem;
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Charter, Georgia, serif;
+  --bg: #0b1117;
+  --surface: #101922;
+  --surface-2: #16212c;
+  --border: rgba(160, 200, 220, 0.15);
+  --fg: #dde7ee;
+  --muted: #8196a6;
+  --accent: #4fd1c5;
+  --accent-ink: #04201d;
+  --accent-soft: rgba(79, 209, 197, 0.12);
+  --grid: rgba(160, 200, 220, 0.09);
+  --radius: 2px;
+  --font-display: Bahnschrift, "DIN Alternate", "Helvetica Neue", "Arial Nova", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-
 [data-bs-theme="light"] {
-  --bg: #f2f0e6;
-  --surface: #fbfaf4;
-  --surface-2: #e9e6d8;
-  --border: rgba(29, 32, 22, 0.14);
-  --fg: #1d2016;
-  --muted: #5d6150;
-  --accent: #8a5f00;
-  --accent-ink: #fbfaf4;
-  --accent-soft: rgba(138, 95, 0, 0.1);
+  --bg: #edf1f3;
+  --surface: #f9fbfb;
+  --surface-2: #e1e8eb;
+  --border: rgba(15, 40, 55, 0.18);
+  --fg: #0f1c25;
+  --muted: #50626f;
+  --accent: #00756c;
+  --accent-ink: #f4fffd;
+  --accent-soft: rgba(0, 117, 108, 0.1);
+  --grid: rgba(15, 40, 55, 0.06);
 }
 
 /* ---------- base ---------- */
@@ -50,7 +51,7 @@ body {
 
 main { flex: 1 0 auto; }
 
-h1, h2, .display-serif { font-family: var(--font-display); letter-spacing: -0.015em; }
+h1, h2, .display-head { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
 
 .text-muted-custom { color: var(--muted) !important; }
 
@@ -65,12 +66,13 @@ a { color: var(--accent); transition: color 0.2s ease; }
   border-bottom: 1px solid var(--border);
 }
 
-.navbar-brand .brand-dot { color: var(--muted); font-weight: 400; }
+.navbar-brand { font-family: var(--font-mono); font-size: 1rem; letter-spacing: -0.02em; }
+.navbar-brand .brand-dot { color: var(--accent); font-weight: 400; }
 
 .nav-link {
   color: var(--muted) !important;
   font-weight: 500;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   padding: 0.45rem 0.85rem !important;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
@@ -112,8 +114,40 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 
 .hero .container-xxl { position: relative; z-index: 1; }
 
+/* drafting grid, fading out toward the edges */
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 70% 50%, #000, transparent);
+  mask-image: radial-gradient(ellipse 70% 70% at 70% 50%, #000, transparent);
+  pointer-events: none;
+}
+
+/* data plate: the hero's visual, plain facts in a placard */
+.plate {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+.plate > div {
+  display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--border);
+}
+.plate > div:first-child { border-top: 0; }
+.plate dt { color: var(--muted); font-weight: 400; }
+.plate dd { margin: 0; color: var(--fg); }
+
 .hero h1 {
   font-size: clamp(2.75rem, 5.5vw, 4.75rem);
+  line-height: 1;
   margin: 0.9rem 0 1rem;
 }
 
@@ -141,7 +175,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   color: var(--accent-ink);
   font-weight: 600;
   padding: 0.6rem 1.4rem;
-  border-radius: 0.7rem;
+  border-radius: var(--radius);
   transition: filter 0.2s ease;
 }
 .btn-primary:hover { color: var(--accent-ink); filter: brightness(1.1); }
@@ -152,7 +186,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   background: transparent;
   font-weight: 600;
   padding: 0.6rem 1.4rem;
-  border-radius: 0.7rem;
+  border-radius: var(--radius);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 .btn-outline-light-custom:hover {
@@ -168,20 +202,35 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 .page-head .lead { color: var(--muted); max-width: 40rem; }
 
 .section-title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   margin-bottom: 1.5rem;
   display: flex; align-items: center; gap: 0.9rem;
 }
 .section-title::after {
   content: "";
   flex: 1;
-  height: 1px;
-  background: var(--border);
+  height: 7px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(var(--accent), var(--accent)) right top / 1px 7px no-repeat;
 }
+
+/* ---------- corner brackets (plate, cards, CTA) ---------- */
+
+.plate::before, .plate::after,
+.card-surface::before, .card-surface::after {
+  content: "";
+  position: absolute;
+  width: 10px; height: 10px;
+  border: 0 solid var(--accent);
+  pointer-events: none;
+}
+.plate::before, .card-surface::before { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+.plate::after, .card-surface::after { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
 
 /* ---------- cards ---------- */
 
 .card-surface {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -203,7 +252,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 
 .card-icon {
   width: 2.6rem; height: 2.6rem;
-  border-radius: 0.75rem;
+  border-radius: var(--radius);
   background: var(--accent-soft);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.2rem;
@@ -217,7 +266,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   color: var(--muted);
   border: 1px solid var(--border);
   background: var(--surface-2);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 0.2rem 0.7rem;
   margin: 0.15rem 0.2rem 0.15rem 0;
 }
@@ -236,10 +285,9 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 .timeline-item::before {
   content: "";
   position: absolute; left: -1.75rem; top: 0.35rem;
-  width: 12px; height: 12px;
-  border-radius: 50%;
+  width: 11px; height: 11px;
   background: var(--bg);
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
 }
 .timeline-item h3 { margin-bottom: 0.15rem; }
 .timeline-meta { color: var(--muted); font-size: 0.9rem; font-family: var(--font-mono); }
@@ -268,7 +316,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--fg);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 0.45rem 1.1rem;
   font-size: 0.92rem;
   margin: 0.25rem;
@@ -282,7 +330,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: calc(var(--radius) + 4px);
+  border-radius: var(--radius);
   padding: 3rem 2rem;
   text-align: center;
   overflow: hidden;
@@ -290,7 +338,12 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 .cta-banner::before {
   content: "";
   position: absolute; inset: 0;
-  background: radial-gradient(60% 120% at 50% 0%, var(--accent-soft), transparent 70%);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 100% at 50% 0%, #000, transparent);
+  mask-image: radial-gradient(ellipse 60% 100% at 50% 0%, #000, transparent);
   pointer-events: none;
 }
 
