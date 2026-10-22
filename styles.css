@@ -367,6 +367,8 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   margin-top: 4rem;
 }
 
+.site-footer a { display: inline-flex; align-items: center; gap: 0.4rem; }
+
 /* ---------- scroll-reveal transitions ---------- */
 
 [data-reveal] {
