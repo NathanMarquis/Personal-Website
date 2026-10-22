@@ -360,6 +360,15 @@
       return { x: W - clamp(s.mx, HELI_LEN, W - HELI_LEN), y: hi };
     }
 
+    // somewhere low on the page on the far side of the heli from the cursor
+    function awayWaypoint() {
+      var W = window.innerWidth, H = window.innerHeight;
+      var hi = H - HELI_LEN, lo = Math.min(Math.max(s.my + 140, H * 0.5), hi - 30);
+      var dx = s.x - s.mx, dy = s.y - s.my, d = Math.sqrt(dx * dx + dy * dy);
+      var ux = d > 20 ? dx / d : (s.x < W / 2 ? -1 : 1), uy = d > 20 ? dy / d : 0;
+      return { x: clamp(s.x + ux * 400, HELI_LEN, W - HELI_LEN), y: clamp(s.y + uy * 300, lo, hi) };
+    }
+
     function crash(t) {
       s.mode = 'crash';
       s.tuck = false;
@@ -423,11 +432,11 @@
           if (s.mode === 'fly' && s.over) {   // no delay: the moment it's on text or the header, stop chasing
             s.mode = 'explore';
             s.tuck = false;
-            s.wp = null;
-            s.xStart = t;
-          } else if (s.mode === 'explore' && s.validFor > 0.9) {   // cursor's been clear for a moment: it notices and heads over
+            s.wp = awayWaypoint();            // wander off the opposite way, starting at once
+            s.xStart = t - 0.7;
+          } else if (s.mode === 'explore' && s.validFor > 0) {   // cursor's off the text: back to following it right away
             s.mode = 'fly';
-            s.ramp = t;                       // spool up gradually instead of lunging after the cursor
+            s.ramp = t - 3;                   // no spool-up: its own inertia keeps the return gentle
           }
         }
 
