@@ -178,6 +178,16 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   background: var(--accent);
 }
 
+/* a link that reads as plain text until you hover it */
+.quiet-link {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 0.25em;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.quiet-link:hover, .quiet-link:focus-visible { color: var(--accent); text-decoration-color: var(--accent); }
+
 /* ---------- buttons ---------- */
 
 .btn-primary {
