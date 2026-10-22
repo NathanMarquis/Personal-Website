@@ -45,89 +45,65 @@
 
   <main id="main" class="container-xxl">
 
-    <!-- ================= PAGE HEAD ================= -->
-    <section class="page-head" aria-labelledby="page-title">
-      <h1 id="page-title" data-reveal>Say hello.</h1>
-      <p class="lead" data-reveal>
-        Recruiting, collaborating, or just want to talk about self-hosting: my inbox is open.
-        I typically reply within a day or two.
-      </p>
-    </section>
+    <svg width="0" height="0" class="position-absolute" aria-hidden="true">
+      <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+      <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></g></symbol>
+    </svg>
 
-    <!-- ================= CONTACT CARDS ================= -->
-    <section class="py-4 pb-5" aria-label="Contact methods">
-      <div class="row g-4">
+    <section class="page-head pb-5" aria-labelledby="page-title">
+      <div class="row g-4 gy-5">
 
-        <!-- Email: primary channel. No form on purpose: a static site has no backend,
-             so mailto is the honest option (no fake "message sent" states). -->
-        <div class="col-lg-6" data-reveal>
-          <div class="card-surface h-100 d-flex flex-column">
-            <div class="card-icon">&#9993;</div>
-            <h3 class="h5 mb-2">Email</h3>
-            <p class="text-muted-custom small flex-grow-1">
-              The fastest way to reach me. For applications, include the role and a link to
-              your job posting. It helps me route things properly.
-            </p>
-            <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
-              <a href="mailto:nathanmarquis23@gmail.com" class="btn btn-primary btn-sm">nathanmarquis23@gmail.com</a>
-              <!-- data-copy: site.js wires up the clipboard copy -->
-              <button type="button" class="btn btn-outline-light-custom btn-sm" data-copy="nathanmarquis23@gmail.com"
-                      aria-label="Copy email address to clipboard">
-                <span class="copy-label">Copy</span>
-              </button>
-            </div>
-            <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
-              <a href="resume.pdf" download class="btn btn-outline-light-custom btn-sm">&#128196; Download my r&eacute;sum&eacute; (PDF)</a>
-            </div>
+        <div class="col-lg-7" data-reveal>
+          <h1 id="page-title">Say hello.</h1>
+          <p class="lead text-muted-custom mb-5">
+            Hiring, collaborating, or want to talk about <strong>self-hosting</strong>?
+            My inbox is open, and I usually reply within <strong>a day or two</strong>.
+          </p>
+
+          <!-- Email is the primary channel. No form on purpose: a static site has no backend,
+               so mailto is the honest option (no fake "message sent" states). -->
+          <a class="mail-link" href="mailto:nathanmarquis23@gmail.com">nathanmarquis23@gmail.com</a>
+          <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
+            <!-- data-copy: site.js wires up the clipboard copy -->
+            <button type="button" class="btn btn-primary" data-copy="nathanmarquis23@gmail.com"
+                    aria-label="Copy email address to clipboard"><span class="copy-label">Copy address</span></button>
+            <a href="mailto:nathanmarquis23@gmail.com" class="btn btn-outline-light-custom">Open in mail</a>
           </div>
+          <p class="text-muted-custom small mt-4 mb-0">
+            Applying for a role? Include the title and a link to the posting.
+          </p>
         </div>
 
-        <div class="col-lg-6" data-reveal>
-          <div class="row g-4 h-100">
-            <div class="col-12">
-              <div class="card-surface h-100">
-                <div class="card-icon">&#128187;</div>
-                <h3 class="h5 mb-2">GitHub</h3>
-                <p class="small mb-2">
-                  <a href="https://github.com/NathanMarquis659" rel="me">@NathanMarquis659</a>
-                  <span class="text-muted-custom">(school account)</span>
-                </p>
-                <p class="small mb-2">
-                  <a href="https://github.com/NathanMarquis" rel="me">@NathanMarquis</a>
-                  <span class="text-muted-custom">(personal account)</span>
-                </p>
-                <p class="text-muted-custom small mb-0">
-                  Most of my commits and coursework are on the school account, since that is
-                  where my classes and team projects live. My personal account holds this site
-                  and a few older repos.
-                </p>
-              </div>
-            </div>
-            <div class="col-12">
-              <a href="https://www.linkedin.com/in/nathanmarquis" rel="me">
-                <div class="card-surface h-100">
-                  <div class="card-icon">&#128188;</div>
-                  <h3 class="h5 mb-2">LinkedIn</h3>
-                  <p class="text-muted-custom small mb-0">/in/nathanmarquis</p>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
+        <div class="col-lg-5" data-reveal>
+          <ul class="channels">
+            <li><a href="https://github.com/NathanMarquis659" rel="me">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-github"/></svg>
+              <span><span class="name">GitHub</span> <span class="text-muted-custom small">school</span></span>
+              <span class="handle">@NathanMarquis659</span></a></li>
+            <li><a href="https://github.com/NathanMarquis" rel="me">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-github"/></svg>
+              <span><span class="name">GitHub</span> <span class="text-muted-custom small">personal</span></span>
+              <span class="handle">@NathanMarquis</span></a></li>
+            <li><a href="https://www.linkedin.com/in/nathanmarquis" rel="me">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-linkedin"/></svg>
+              <span class="name">LinkedIn</span>
+              <span class="handle">/in/nathanmarquis</span></a></li>
+            <li><a href="resume.pdf" download>
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-doc"/></svg>
+              <span class="name">R&eacute;sum&eacute;</span>
+              <span class="handle">PDF</span></a></li>
+          </ul>
 
-      </div>
-
-      <!-- ================= AVAILABILITY NOTE ================= -->
-      <div class="row g-4 mt-1" data-reveal>
-        <div class="col-12">
-          <div class="contact-card d-flex flex-wrap align-items-center gap-3">
+          <div class="mt-4">
             <span class="status-line"><span class="status-dot"></span> available</span>
-            <p class="text-muted-custom small mb-0">
-              Open to internship and new-grad roles &middot; Boise, Idaho &middot; open to
-              relocation &amp; remote.
+            <p class="text-muted-custom small mt-3 mb-0">
+              <strong>Internship and new-grad roles.</strong> Based in Boise, Idaho, and open to
+              relocation or remote.
             </p>
           </div>
         </div>
+
       </div>
     </section>
 

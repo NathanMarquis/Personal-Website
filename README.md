@@ -84,7 +84,9 @@ flowchart LR
   on Mac, Arial elsewhere). Dates and labels are monospace. No web fonts are loaded.
 - **Structure as information.** Corner brackets mark the content blocks, the hero shows a
   plain-facts "data plate", and section titles end in a drafting tick.
-- **Little motion.** Fade-ins are limited to the hero and subpages, and everything honors
+- **Emphasis.** Key phrases step up to full-strength bold text, the headline claims get a
+  teal underline, and the stat rows use large teal numerals so the eye lands on facts first.
+- **Motion.** Sections fade and pop in once as they scroll into view. Everything honors
   `prefers-reduced-motion`.
 
 ## The helicopter
