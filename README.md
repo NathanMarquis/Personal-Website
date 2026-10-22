@@ -52,7 +52,8 @@ flowchart LR
 | `index.html`, `about.html`, `projects.html`, `experience.html`, `contact.html` | The pages. Each one is fully assembled HTML, so there is nothing to render at request time. |
 | `_partials/header.html`, `_partials/footer.html` | Source of truth for the nav and footer. Edit these first, then copy into all five pages. |
 | `styles.css` | The whole visual design, layered on top of Bootstrap. Colors, type, and spacing are CSS variables at the top of the file, with a light theme overriding the same variables. |
-| `site.js` | Footer year, theme toggle (saved in `localStorage` under `site-theme`), scroll reveal, copy-to-clipboard button, and the helicopter. |
+| `pt.js` | Tiny script in each page's `<head>`: parks an incoming page off screen before first paint so it can slide in. |
+| `site.js` | Page transitions, footer year, theme toggle (saved in `localStorage` under `site-theme`), scroll reveal, copy-to-clipboard button, and the helicopter. |
 | `assets/css`, `assets/js` | Bootstrap 5.3.3, self-hosted and pinned. Used for the grid, navbar, collapse, and accordion. |
 | `_headers` | Content Security Policy and other security headers, applied by Cloudflare. |
 | `wrangler.jsonc` | Deploy config for `npx wrangler deploy`. Its `assets.exclude` list keeps repo internals out of the published site. |
@@ -86,6 +87,13 @@ flowchart LR
   plain-facts "data plate", and section titles end in a drafting tick.
 - **Emphasis.** Key phrases step up to full-strength bold text, the headline claims get a
   teal underline, and the stat rows use large teal numerals so the eye lands on facts first.
+- **Hover focus.** Cards, timeline entries, the data plate and the CTA step forward slightly under
+  the cursor, with a teal border. Nothing else changes.
+- **Page transitions.** Clicking a link slides the page content out to the left and the next page in
+  from the right (the header stays). If the helicopter is in the air it flies off to the right with
+  the page and carries on across the next one until it leaves the screen; if it is landed it just rides
+  out with the page. The hand-off between pages is a short-lived `sessionStorage` key, because the
+  CSP (`connect-src 'none'`) rules out fetching the next page in the background.
 - **Motion.** Sections fade and pop in once as they scroll into view. Everything honors
   `prefers-reduced-motion`.
 
@@ -126,9 +134,10 @@ Tuning constants such as `MAX_SPEED`, `HELI_LEN`, and `SHAKE_NEED` are named at 
 ## Security posture
 
 - **No third-party requests.** Bootstrap is self-hosted in `assets/` and pinned to 5.3.3.
-- **Two scripts only**, both served from this domain:
+- **Three scripts, besides Bootstrap**, all served from this domain:
   - `assets/js/bootstrap.bundle.min.js`: upstream Bootstrap, unmodified
     (sha256 `0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c`)
+  - `pt.js`: page-transition boot (runs in `<head>`)
   - `site.js`: everything above
 - **Pinned stylesheet:** `assets/css/bootstrap.min.css`
   (sha256 `3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8`)

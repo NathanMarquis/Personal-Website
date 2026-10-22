@@ -46,6 +46,7 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
+          setTimeout(function () { entry.target.style.transitionDelay = ''; }, 1000);   // the stagger shouldn't delay hover effects
           io.unobserve(entry.target); // reveal once, stay put
         }
       });
@@ -82,11 +83,12 @@
   // Home page only. Skipped for touch devices (no cursor) and reduced-motion users.
   var motionOk = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var hasMouse = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var heliApi = null;                   // set by initHelicopter: lets a page change hand the flight over
   if (motionOk && hasMouse && document.body.getAttribute('data-page') === 'home') initHelicopter();
 
-  function initHelicopter() {
-    // A grey UH-1 Huey, side view with the nose to the right, plus top and nose-on views for the
-    // yaw turns and the fall. Rotor/tail-rotor flicker is pure CSS (styles.css).
+  // A grey UH-1 Huey, side view with the nose to the right, plus top and nose-on views for the
+  // yaw turns and the fall. Rotor/tail-rotor flicker is pure CSS (styles.css).
+  function createHeliEl() {
     var el = document.createElement('div');
     el.className = 'heli';
     el.setAttribute('aria-hidden', 'true');
@@ -155,6 +157,11 @@
         '</g>' +
       '</svg>';
     document.body.appendChild(el);
+    return el;
+  }
+
+  function initHelicopter() {
+    var el = createHeliEl();
 
     // Warm light cone on the page itself. A sibling layer (not part of the sprite) so it can blend
     // with the page underneath; styles.css only shows it in dark mode.
@@ -536,6 +543,11 @@
             s.tipUntil = t + 8;
             el.classList.add('perched');
           }
+        } else if (s.mode === 'depart') { // leaving the page: nose right, spool up toward the right side and keep going
+          s.want = 0;
+          s.vx += (clamp((s.xTo - s.x) / 0.5, 520, 1000) - s.vx) * Math.min(1, dt * 4);   // never slows down on the way
+          s.vy += (0 - s.vy) * Math.min(1, dt * 3);
+          s.rot += (clamp(s.vx * 0.02, -9, 9) - s.rot) * Math.min(1, dt * 8);
         } else if (s.mode === 'perch') {  // perched: ride along with the pill, wait to be invited back
           var ps = s.spot();
           s.x = ps.x; s.y = ps.y; s.vx = 0; s.vy = 0;     // re-read the pill's spot every frame, so it rides along with scrolling
@@ -579,7 +591,7 @@
         if (s.mode === 'fly' || s.mode === 'explore' || s.mode === 'crash') wallGovern();
         s.tax += ((s.vx - s.pvx) / dt - s.tax) * Math.min(1, dt * 8);   // measured horizontal acceleration, smoothed
         s.pvx = s.vx;
-        s.x = clamp(s.x + s.vx * dt, 0, window.innerWidth);
+        s.x = s.mode === 'perch' ? s.x : clamp(s.x + s.vx * dt, 0, window.innerWidth);   // a perched heli rides its pill, even out of the window
         s.y += s.vy * dt;
 
         // fall in 3D, one pass through four views: side, top, nose-on, far side; then it levels out
@@ -624,10 +636,90 @@
       }
       requestAnimationFrame(frame);
     }
+    // Page change (see "page transitions" below): only a heli that is in the air takes part
+    heliApi = {
+      depart: function () {
+        if (s.mode === 'perch') return false;       // landed: the page just slides away under it
+        s.mode = 'depart';
+        s.tuck = false;
+        s.xTo = Math.min(window.innerWidth - HELI_LEN, Math.max(s.x + 260, window.innerWidth * 0.78));
+        tip.classList.remove('show');
+        if (hint) hint.classList.remove('show');
+        return true;
+      },
+      arrived: function () { return s.x >= s.xTo - 20; },
+      snapshot: function () { return { x: s.x, y: s.y, vx: s.vx, rot: s.rot }; }
+    };
     s.spot = pillSpot() ? pillSpot : ledgeSpot;
     el.classList.add('perched');
     requestAnimationFrame(frame);
   }
+
+  // --- page transitions: the content slides out to the left and the next page slides in from the
+  // right (header stays put). A heli that is in the air flies off to the right with it and carries on
+  // across the next page; a landed one just rides out with the page. pt.js (in <head>) parks the
+  // incoming page off screen before first paint; the hand-off lives in sessionStorage. ---
+  var root = document.documentElement, PT_KEY = 'pt', navigating = false;
+  function pageKey(p) { return p.replace(/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, ''); }
+
+  function flyOver(h) {                 // the heli from the last page, carrying on until it leaves the screen
+    var el = createHeliEl(), x = h.x, y = h.y, vx = Math.max(h.vx, 300), rot = h.rot, prev = null;
+    el.style.transition = 'none';
+    el.classList.add('on');
+    (function step(ms) {
+      var dt = prev === null ? 0 : Math.min(0.05, (ms - prev) / 1000);
+      prev = ms;
+      vx += (800 - vx) * Math.min(1, dt * 1.5);
+      x += vx * dt;
+      rot += (Math.min(9, vx * 0.02) - rot) * Math.min(1, dt * 8);
+      el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + rot.toFixed(1) + 'deg)';
+      if (x > window.innerWidth + 100) el.remove(); else requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  var arriving = null;
+  try {
+    var rawPt = sessionStorage.getItem(PT_KEY);
+    if (rawPt) {
+      sessionStorage.removeItem(PT_KEY);
+      arriving = JSON.parse(rawPt);
+      if (!arriving || Date.now() - arriving.t > 4000) arriving = null;
+    }
+  } catch (err) { /* storage blocked: no transition */ }
+  if (arriving) {
+    if (arriving.heli && motionOk) flyOver(arriving.heli);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        root.classList.add('pt-run');
+        root.classList.remove('pt-in');
+        setTimeout(function () { root.classList.remove('pt-run'); }, 1000);
+      });
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    if (navigating || !motionOk || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+    var u = new URL(a.href, location.href);
+    if (u.origin !== location.origin || pageKey(u.pathname) === pageKey(location.pathname)) return;
+    if (/\.[a-z0-9]+$/i.test(u.pathname) && !/\.html$/i.test(u.pathname)) return;   // a file, not a page
+    e.preventDefault();
+    navigating = true;
+    var flying = !!(heliApi && heliApi.depart());
+    var minMs = flying ? 800 : 550, t0 = Date.now();
+    root.style.setProperty('--pt-out', minMs + 'ms');
+    root.classList.add('pt-out');
+    (function wait() {
+      var waited = Date.now() - t0;
+      if (waited < minMs || (flying && !heliApi.arrived() && waited < 1300)) { setTimeout(wait, 30); return; }
+      try { sessionStorage.setItem(PT_KEY, JSON.stringify({ t: Date.now(), heli: flying ? heliApi.snapshot() : null })); } catch (err) { /* ignore */ }
+      location.href = u.href;
+    })();
+  });
+  window.addEventListener('pageshow', function (e) {   // back button restored the slid-out page from cache
+    if (e.persisted && root.classList.contains('pt-out')) location.reload();
+  });
 
   // --- respect reduced-motion: reveal instantly, no transitions ---
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

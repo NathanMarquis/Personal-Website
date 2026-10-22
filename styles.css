@@ -430,7 +430,7 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
 [data-reveal] {
   opacity: 0;
   transform: translateY(22px) scale(0.985);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.25s ease;
 }
 [data-reveal].revealed { opacity: 1; transform: none; }
 
@@ -554,3 +554,30 @@ html.reduced-motion [data-reveal] { opacity: 1; transform: none; transition: non
   .status-dot { animation: none; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* ---------- hover focus: the block under the cursor steps forward ---------- */
+
+@media (hover: hover) {
+  .card-surface:not([data-reveal]), .timeline-item:not([data-reveal]), .plate:not([data-reveal]), .cta-banner:not([data-reveal]) {
+    transition: scale 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .timeline-item { transform-origin: left center; }
+  .card-surface:hover, .plate:hover, .cta-banner:hover {
+    scale: 1.025;
+    border-color: var(--accent);
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.75);
+    z-index: 2;
+  }
+  .timeline-item:hover { scale: 1.015; }
+}
+
+/* ---------- page transitions (see site.js and pt.js) ---------- */
+
+html.pt-out, html.pt-in, html.pt-run { overflow-x: hidden; }
+html.pt-out main, html.pt-out .site-footer {
+  transform: translateX(-100vw);
+  opacity: 0;
+  transition: transform var(--pt-out, 550ms) cubic-bezier(0.55, 0, 0.9, 0.5), opacity var(--pt-out, 550ms) ease-in;
+}
+html.pt-in main, html.pt-in .site-footer { transform: translateX(100vw); }
+html.pt-run main, html.pt-run .site-footer { transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.25, 1); }
