@@ -380,6 +380,87 @@ body[data-page="contact"] .nav-link[href="/contact.html"] {
 }
 [data-reveal].revealed { opacity: 1; transform: none; }
 
+/* ---------- cursor helicopter (see site.js) ---------- */
+
+.heli {
+  position: fixed; left: 0; top: 0;
+  width: 80px; height: 40px; margin: -20px 0 0 -40px;
+  pointer-events: none; z-index: 1060;
+  opacity: 0; transition: opacity 0.3s ease;
+  will-change: transform;
+}
+.heli.on { opacity: 1; }
+.heli svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.heli-side, .heli-front { transform-origin: 40px 22px; }
+.heli-front { opacity: 0; }
+.heli-body { fill: #838b94; stroke: #252a30; stroke-width: 0.45; stroke-linejoin: round; }
+.heli-dark { fill: #565d65; stroke: #252a30; stroke-width: 0.45; stroke-linejoin: round; }
+.heli-shade { fill: #69707a; }
+.heli-line-fill { fill: #6d757e; }
+.heli-vent { fill: #3a4148; }
+.heli-spade { fill: #0b0c0e; }
+.heli-hi { stroke: #a8afb7; stroke-width: 0.5; stroke-linecap: round; }
+.heli-mast { stroke: #4a5159; stroke-width: 2; stroke-linecap: round; }
+.heli-line.thin { stroke-width: 0.9; }
+.heli-tdisc { fill: var(--fg); opacity: 0.08; }
+.heli-glass { fill: #2c3946; stroke: #252a30; stroke-width: 0.5; }
+.heli-door { fill: none; stroke: #3a4148; stroke-width: 0.5; stroke-linecap: round; }
+.heli-light { fill: #e8e3b0; }
+.heli-beam { display: none; }
+[data-bs-theme="dark"] .heli-beam { display: inline; }
+
+/* faint warm wash on the page under the heli's lamp: screen-blended so dark mode stays dark */
+.heli-lamp {
+  display: none;
+  position: fixed; left: 0; top: 0;
+  width: 210px; height: 150px; margin: -75px 0 0 0;
+  transform-origin: 0 50%;
+  pointer-events: none; z-index: 1059;
+  opacity: 0; mix-blend-mode: screen; will-change: transform, opacity;
+  background: conic-gradient(from 70deg at 0 50%,
+    transparent 0deg, rgba(255, 186, 104, 0.12) 8deg, rgba(255, 186, 104, 0.26) 20deg,
+    rgba(255, 186, 104, 0.12) 32deg, transparent 40deg, transparent 360deg);
+  -webkit-mask-image: radial-gradient(circle at 0 50%, #000 0, rgba(0, 0, 0, 0.85) 30%, transparent 100%);
+  mask-image: radial-gradient(circle at 0 50%, #000 0, rgba(0, 0, 0, 0.85) 30%, transparent 100%);
+}
+[data-bs-theme="dark"] .heli-lamp { display: block; }
+.heli-line { stroke: #6d757e; stroke-width: 1.6; stroke-linecap: round; fill: none; }
+.heli-top, .heli-upper { transform-origin: 40px 22px; }
+.heli-top { opacity: 0; }
+.heli-disc { fill: var(--fg); opacity: 0.08; }
+.heli-blade { stroke: var(--fg); stroke-width: 1.8; stroke-linecap: round; opacity: 0.5; }
+.heli-hub { fill: var(--fg); }
+.heli-blades { transform-origin: 40px 22px; animation: heli-spin 0.7s linear infinite; }
+@keyframes heli-spin { to { transform: rotate(360deg); } }
+.heli-rotor {
+  fill: var(--fg); opacity: 0.6;
+  transform-box: fill-box; transform-origin: center;
+}
+.heli-rotor { animation: heli-rotor 0.1s linear infinite alternate; }
+.heli-tblades { transform-origin: -3.4px 14.9px; animation: heli-spin 0.16s linear infinite; }
+/* hint shown above the helicopter after it's been shooed off */
+.heli-tip {
+  position: fixed; left: 0; top: 0; z-index: 1061;
+  max-width: 200px; padding: 0.45rem 0.7rem;
+  font-size: 0.78rem; line-height: 1.35; text-align: center;
+  color: var(--fg); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 0.6rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  pointer-events: none; opacity: 0; transition: opacity 0.25s ease;
+}
+.heli-tip.show { opacity: 1; }
+.heli-tip::after {
+  content: ''; position: absolute; left: 50%; bottom: -5px;
+  width: 8px; height: 8px; background: var(--surface-2);
+  border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* landed: rotors wind down to a lazy turn */
+.heli.perched .heli-rotor { animation-duration: 0.7s; }
+.heli.perched .heli-tblades { animation-duration: 0.9s; }
+@keyframes heli-rotor { from { transform: scaleX(0.8); } to { transform: scaleX(1); } }
+
 /* ---------- a11y / motion ---------- */
 
 .skip-link {

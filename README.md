@@ -11,7 +11,7 @@ Bootstrap transitions/collapses plus a tiny IntersectionObserver scroll-reveal.
 - **Only two scripts on the whole site**, both served from this domain:
   - `assets/js/bootstrap.bundle.min.js` — upstream Bootstrap, unmodified
     (sha256 `0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c`)
-  - `site.js` — ~60 lines: footer year, theme toggle (localStorage), scroll-reveal, copy button
+  - `site.js` — footer year, theme toggle (localStorage), scroll-reveal, copy button, cursor helicopter (home page only)
 - The self-hosted stylesheet is pinned too: `assets/css/bootstrap.min.css`
   (sha256 `3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8`)
 - **CSP** (`_headers`): `script-src 'self'`, `connect-src 'none'`,
@@ -29,7 +29,7 @@ Bootstrap transitions/collapses plus a tiny IntersectionObserver scroll-reveal.
 | `experience.html` | Timeline + Bootstrap accordion details, education entry |
 | `contact.html` | Email card with copy-to-clipboard, profile links, availability |
 | `styles.css` | Custom design layer on top of Bootstrap (dark default + light theme) |
-| `site.js` | Theme toggle, scroll-reveal, footer year, copy button |
+| `site.js` | Theme toggle, scroll-reveal, footer year, copy button, cursor helicopter (home page only) |
 | `_partials/` | Source-of-truth nav/header/footer — **when you edit these, re-sync the 5 pages** |
 | `assets/css/bootstrap.min.css`, `assets/js/bootstrap.bundle.min.js` | Pinned Bootstrap 5.3.3 (self-hosted) |
 | `_headers` | Security headers (CSP etc.). **Format gotcha:** it's `path-glob → indented header lines`, e.g. `/*` then 2-space-indented `Name: value` pairs. No comments allowed — every non-blank line must parse as a glob or a header pair. This exact mistake broke the first deploy (error code 100324). |
