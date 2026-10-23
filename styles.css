@@ -259,16 +259,11 @@ body[data-page="contact"] .nav-link[href="contact.html"] {
   height: 100%;
 }
 
-/* Invisible stretched link (index "More work" card): the ::after overlay must sit
-   above interactive content, or clicks fall through to whatever is on top. */
-.stretched-none {
-  position: relative;
-}
-.stretched-none::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+/* The index "More work" card is fully clickable via Bootstrap's .stretched-link:
+   the anchor's ::after overlay covers the whole card because .card-surface is
+   position: relative. Give keyboard focus the same cue as hover. */
+.card-surface:has(a.stretched-link:focus-visible) {
+  border-color: var(--accent);
 }
 
 .card-surface h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.005em; }
