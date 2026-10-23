@@ -117,6 +117,9 @@ stateDiagram-v2
   Explore --> Flee: shake the mouse
   Flee --> Perched: lands back on the pill
   Perched --> Liftoff: hover it for 0.5 s
+  Follow --> Hook: click
+  Hook --> Hook: touches something, latches on and carries it
+  Hook --> Follow: click with nothing latched, hook reels in
   Follow --> Depart: a link is clicked
   Explore --> Depart: a link is clicked
   Depart --> [*]: flies on across the next page
@@ -131,6 +134,7 @@ stateDiagram-v2
 | Walls | A soft margin of one helicopter length from every window edge, plus a hard speed governor. |
 | No-go zones | Text, the header, and any box with text in it (cards, the data plate, timeline entries, buttons, tags) are off limits, padding included. The moment the cursor is over one, the helicopter stops chasing and wanders off to a spot low on the page on the far side of itself from the cursor. The moment the cursor leaves, it follows again. There is no delay either way, and its own inertia keeps the turns gentle. |
 | Page change | Clicking a link while it is in the air sends it nose-right toward the right side as the page slides out, and it carries on across the next page until it leaves the screen. A landed helicopter rides out with the page instead. See the page transitions note under design choices. |
+| Cargo hook | Click while it is following the cursor (not on a link or button): it moves right over the cursor and drops a small fixed-length rope and hook. The hook is sticky. The first box or text its tip touches latches on, and the helicopter drags it around, swinging like a pendulum. Click again to let go and the load springs back to where it lives; click with nothing latched to reel the hook in. While the hook is out the no-go zones are ignored. A shake, a crash, or leaving the page stows it. After a release the hook ignores everything for 1.2 s so it does not re-grab what it dropped. |
 | Dismiss | Shake the mouse back and forth. It flies home and lands on the pill. If the pill scrolls off screen it flies up and waits there. |
 
 Tuning constants such as `MAX_SPEED`, `HELI_LEN`, and `SHAKE_NEED` are named at the top of

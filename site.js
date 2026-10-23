@@ -289,6 +289,105 @@
     }
     function wrap180(d) { return ((d + 180) % 360 + 360) % 360 - 180; }
 
+    // ---- EXPERIMENTAL cargo hook -------------------------------------------------------------------
+    // Click while it hovers by the cursor: the heli moves right over the cursor and lowers a hook to it.
+    // The hook is sticky: the first box or text it touches latches on, and it drags it around, swinging like a pendulum. Click again to
+    // let go (the load springs back home); click with nothing on the hook to reel it in. Clicks on links
+    // and buttons are left alone (they reset the hook instead).
+    var HOOK_ROPE = 56;                   // px: the rope never changes length
+    var HOOK_DROP = HOOK_ROPE + 11;       // the heli hovers this far above the cursor, so the hook tip sits on it
+    var HOOK_TEXT = 'h1, h2, h3, h4, p, li, dt, dd';
+    var hook = { state: 'stowed', len: 0, t0: 0, cool: 0, th: 0, thv: 0, load: null, g: null, sx0: 0, sy0: 0, tx: 0, ty: 0 };
+    var hookSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    hookSvg.setAttribute('class', 'heli-hook');
+    hookSvg.setAttribute('aria-hidden', 'true');
+    hookSvg.innerHTML = '<line class="heli-rope" x1="0" y1="0" x2="0" y2="0"/>' +
+      '<g class="heli-hookg"><circle class="heli-hookline" cx="0" cy="2.4" r="2.2"/>' +
+      '<path class="heli-hookline" d="M0 4.6 V13 A4.6 4.6 0 0 1 -9.2 13 V9.5"/></g>';
+    hookSvg.style.display = 'none';
+    document.body.appendChild(hookSvg);
+    var rope = hookSvg.querySelector('.heli-rope'), hookG = hookSvg.querySelector('.heli-hookg');
+
+    function grabbable(x, y) {
+      var e = document.elementFromPoint(x, y);
+      if (!e || e.closest('.site-header')) return null;
+      return e.closest(HOOK_TEXT) || e.closest(BOXES);
+    }
+    function loadFree(back) {             // let go: the load drops back to where it lives
+      var ld = hook.load;
+      if (!ld) return;
+      hook.load = null;
+      document.documentElement.style.overflowX = '';
+      ld.style.transition = back ? 'transform 0.7s cubic-bezier(0.3, 1.5, 0.5, 1)' : 'none';
+      ld.style.transform = 'none';
+      setTimeout(function () {
+        ['position', 'zIndex', 'transition', 'transform', 'transformOrigin', 'pointerEvents'].forEach(function (p) { ld.style[p] = ''; });
+      }, back ? 760 : 0);
+    }
+    function hookReset() {                // heli is busy with something else (crash, flee, page change): drop it all
+      loadFree(true);
+      hook.state = 'stowed';
+      hook.len = 0;
+      hookSvg.style.display = 'none';
+    }
+    function hookStep(dt, t) {
+      if (hook.state === 'stowed') return;
+      var bx = s.x, by = s.y + 11;                       // under the belly
+      // pendulum: swings out when the heli accelerates, settles by itself
+      hook.thv += (-14 * hook.th - 3 * hook.thv - s.tax * 0.0025) * dt;
+      hook.th = clamp(hook.th + hook.thv * dt, -0.6, 0.6);
+      if (hook.state === 'lower' || hook.state === 'hang') {
+        // fixed-length rope, and the hook is sticky: the first box or text it touches latches on (after a
+        // short cooldown following a release, so it doesn't re-grab what it just dropped)
+        hook.len = Math.min(HOOK_ROPE, hook.len + 1200 * dt);
+        var tipX = bx + hook.len * Math.sin(hook.th), tipY = by + hook.len * Math.cos(hook.th);
+        var hit = t > hook.cool ? grabbable(tipX, tipY) : null;
+        if (hit) {
+          var r = hit.getBoundingClientRect();
+          hook.load = hit;
+          hook.g = { x: tipX - r.left, y: tipY - r.top };            // where on the load the hook caught it
+          hook.gx0 = tipX; hook.gy0 = tipY; hook.sx0 = window.scrollX; hook.sy0 = window.scrollY;
+          hit.style.position = 'relative';
+          hit.style.zIndex = '1055';
+          hit.style.transition = 'none';
+          hit.style.pointerEvents = 'none';
+          hit.style.transformOrigin = hook.g.x.toFixed(1) + 'px ' + hook.g.y.toFixed(1) + 'px';
+          hook.state = 'carry';
+          document.documentElement.style.overflowX = 'hidden';   // a swinging load shouldn't add a scrollbar
+        }
+      } else if (hook.state === 'retract') {
+        hook.len -= 650 * dt;
+        if (hook.len <= 0) { hookReset(); return; }
+      }
+      var tx = bx + hook.len * Math.sin(hook.th), ty = by + hook.len * Math.cos(hook.th);
+      if (hook.load) {
+        var nx = hook.gx0 - (window.scrollX - hook.sx0), ny = hook.gy0 - (window.scrollY - hook.sy0);
+        hook.load.style.transform = 'translate(' + (tx - nx).toFixed(1) + 'px,' + (ty - ny).toFixed(1) + 'px) rotate(' + (hook.th * 57.3).toFixed(1) + 'deg)';
+      }
+      hookSvg.style.display = '';
+      rope.setAttribute('x1', bx.toFixed(1)); rope.setAttribute('y1', by.toFixed(1));
+      rope.setAttribute('x2', tx.toFixed(1)); rope.setAttribute('y2', ty.toFixed(1));
+      hookG.setAttribute('transform', 'translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ') rotate(' + (hook.th * 57.3).toFixed(1) + ') scale(0.6)');
+    }
+    function hookClick(t) {
+      if (hook.state === 'stowed') {
+        s.mode = 'fly'; s.tuck = false; s.wp = null; s.ramp = t - 3; s.grace = Math.max(s.grace, t + 1);
+        hook.state = 'lower'; hook.len = 0; hook.t0 = t; hook.thv = 0;
+      } else if (hook.state === 'carry') {
+        loadFree(true);
+        hook.state = 'hang';
+        hook.cool = t + 1.2;
+      } else if (hook.state !== 'retract') {
+        hook.state = 'retract';
+      }
+    }
+    document.addEventListener('click', function (e) {
+      if (e.button !== 0 || e.defaultPrevented) return;
+      if (e.target.closest && e.target.closest('a, button, summary, input, textarea, select, label')) { hookReset(); return; }
+      if (hook.state === 'stowed' && s.mode !== 'fly' && s.mode !== 'explore') return;
+      hookClick(performance.now() / 1000);
+    });
+
     document.addEventListener('pointermove', function (e) {
       if (e.pointerType && e.pointerType !== 'mouse') return;
       if (s.hasMouse) {                   // smoothed cursor velocity (px/s), used to aim a crash
@@ -373,6 +472,7 @@
     }
 
     function crash(t) {
+      hookReset();
       s.mode = 'crash';
       s.tuck = false;
       s.until = t + 1.1 + Math.random() * 0.4;
@@ -388,6 +488,7 @@
 
     // had enough: pull out of whatever it was doing and go sit on the pill
     function flee(t) {
+      hookReset();
       s.mode = 'flee';
       s.fleeAt = t;
       s.land = 0;                         // 0: fly to the hover point above the pill, 1: lower onto it
@@ -431,6 +532,7 @@
             s.probeT = t; s.probeX = s.mx; s.probeY = s.my;
             s.over = overText(s.mx, s.my);
           }
+          if (hook.state !== 'stowed') s.over = 0;   // with the hook out it stays over the cursor
           if (s.over) s.validFor = 0; else s.validFor += dt;
           if (s.mode === 'fly' && s.over) {   // no delay: the moment it's on text or the header, stop chasing
             s.mode = 'explore';
@@ -451,7 +553,8 @@
           // the zone under it is free space: while the cursor is in there the heli stays put
           // (just creeping toward centered over it) and only chases once the cursor leaves
           var ux = s.mx - s.x, uy = s.my - s.y;
-          if (!s.tuck) {
+          if (hook.state !== 'stowed') s.tuck = false;
+          else if (!s.tuck) {
             if (Math.abs(ux) < 70 && uy > 35 && uy < 170) s.tuck = true;
           } else if (Math.abs(ux) > 100 || uy < 20 || uy > 210) {
             s.tuck = false;
@@ -464,8 +567,9 @@
             s.vy += (8 * Math.cos(t * 3.2) - s.vy) * ease;   // keep the idle bob
           } else {
             // head for the corner point; gentler right after leaving a no-go zone (rp: 0 -> 1 over 3s)
-            var tx = clamp(s.mx + s.side * OFF_X, HELI_LEN, window.innerWidth - HELI_LEN);
-            var ty = clamp(s.my + OFF_Y, HELI_LEN, window.innerHeight - HELI_LEN) + Math.sin(t * 3.2) * 2.5;
+            var hooked = hook.state !== 'stowed';
+            var tx = clamp(s.mx + (hooked ? 0 : s.side * OFF_X), HELI_LEN, window.innerWidth - HELI_LEN);
+            var ty = clamp(s.my + (hooked ? -HOOK_DROP : OFF_Y), HELI_LEN, window.innerHeight - HELI_LEN) + Math.sin(t * 3.2) * 2.5;
             var rp = clamp((t - s.ramp) / 3, 0, 1);
             steerTo(tx, ty, dt, 140 + (MAX_SPEED - 140) * rp, 90 + 230 * rp);
           }
@@ -605,6 +709,7 @@
         s.pvx = s.vx;
         s.x = s.mode === 'perch' ? s.x : clamp(s.x + s.vx * dt, 0, window.innerWidth);   // a perched heli rides its pill, even out of the window
         s.y += s.vy * dt;
+        hookStep(dt, t);
 
         // fall in 3D, one pass through four views: side, top, nose-on, far side; then it levels out
         if (s.mode === 'crash') {
@@ -652,6 +757,7 @@
     heliApi = {
       depart: function () {
         if (s.mode === 'perch') return false;       // landed: the page just slides away under it
+        hookReset();
         s.mode = 'depart';
         s.tuck = false;
         s.xTo = Math.min(window.innerWidth - HELI_LEN, Math.max(s.x + 260, window.innerWidth * 0.78));
